@@ -1,42 +1,37 @@
 {% include 'base.html' %}
     <main>
-    
-      <div class="swiper">
-        <!-- Additional required wrapper -->
-        <div class="swiper-wrapper">
-          <!-- Slides -->
-          <div class="swiper-slide">
-            <div class="container">
-                {% for event in events %}
-              <div class="col-3">
-                <img
-                  class="hero-img"
-                  src="{{ event.image.url }}"
-                  alt="{{ event.name }}"
-                />
-              </div>
-              <div class="col-40 centre">
-                <span
-                  ><i class="fa-solid fa-layer-group"></i
-                  >{{event.category}}</span
-                >
-                <h2>{{event.name}}</h2>
-                <p>
-                  <i class="fa-solid fa-calendar-days"></i>{{event.date}}
-                  <i class="fa-regular fa-clock"></i>{{event.time}}
-                  <i class="fa-solid fa-location-dot"></i>{{event.location}}
-                </p>
-                <button class="btn-primary" type="button">Book ticket</button>
-              </div>
-              
-            </div>
-              {% empty %}
-              <p>No events available.</p>
-              {% endfor %}
-          </div>
+
+<div class="swiper">
+  <div class="swiper-wrapper">
+    {% for event in events %}
+    <div class="swiper-slide">
+      <div class="container">
+        <div class="col-3">
+          <img class="hero-img" src="{{ event.image.url }}" alt="{{ event.name }}" />
+        </div>
+        <div class="col-40 centre">
+          <span><i class="fa-solid fa-layer-group"></i> {{ event.category }}</span>
+          <h2>{{ event.name }}</h2>
+          <p>
+            <i class="fa-solid fa-calendar-days"></i> {{ event.date }}
+            <i class="fa-regular fa-clock"></i> {{ event.time }}
+            <i class="fa-solid fa-location-dot"></i> {{ event.location }}
+          </p>
+          <a href="event_detail/{{event.id}}" class="btn-primary" type="button">Book ticket</a>
         </div>
       </div>
-    
+    </div>
+    {% empty %}
+    <p>No events available for the slider.</p>
+    {% endfor %}
+  </div>
+  <!-- Add Pagination if needed -->
+  <div class="swiper-pagination"></div>
+  <!-- Add Navigation if needed -->
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
+</div>
+
     <div class="container">
       <h2>Popular/upcoming events</h2>
     </div>
@@ -46,7 +41,7 @@
         <a class="border-none" href="event_detail/{{event.id}}">
           <img src="{{ event.image.url }}" alt="{{ event.name }}" />
           <h2>{{ event.name }}</h2>
-        </a> 
+        </a>
         <span class="centre">
           <p>
             <i class="fa-solid fa-calendar-days"></i>{{ event.date }}
