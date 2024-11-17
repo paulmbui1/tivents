@@ -1,21 +1,35 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="container">
-    <h1>Event Details</h1>
-    </div>
-    
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'event_list' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'event_list' %}">Events</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ event.name }}</li>
+        </ol>
+    </nav>
+</div>
     <div class="container">
     <div class="col-3">
-            <img class="hero-img" src="{{ event.image.url }}" alt="{{ event.title }}">
-        </div>
-    <div class="col-40">
-        <h2 class="my-1">Event Name: {{event.name}}</h2>
-        <p class="my-1">Event description : {{ event.description }}</p>
-        <p class="centre2">
+           <h2 class="my-1">{{event.name}}</h2>
+     <p class="my-1">Event description : {{ event.description }}</p>
+         <p class="m-1 centre2">
             <i class="fa-solid fa-calendar-days"></i>{{ event.date }} <br>
             <i class="fa-solid fa-clock"></i>{{ event.time }} <br>
             <i class="fa-solid fa-location-dot"></i>{{ event.location }}
           </p>
+            <img class="hero-img" src="{{ event.image.url }}" alt="{{ event.title }}">
+        </div>
+   
+    <div class="col-40">
+        
+        
+        
     <h2 class="my-1">Book This Event</h2>
     <form method="post">
         {% csrf_token %}

@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
         el: '.swiper-pagination',
         clickable: true,
       },
+       speed: 500,
       autoplay: {
         delay: 3500, // slide after 3.5 seconds
         disableOnInteraction: false,

@@ -192,6 +192,42 @@ form {
 .pagination .current {
   font-weight: bold;
 }
+/* Breadcrumb Container */
+.breadcrumb {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    font-size: 1rem;
+}
+
+/* Breadcrumb Items */
+.breadcrumb-item {
+    display: inline;
+    color: #007bff;
+    text-decoration: none;
+    margin-right: 0.5rem;
+}
+
+/* Breadcrumb Separator */
+.breadcrumb-item::after {
+    content: ">";
+    color: #6c757d;
+    margin-left: 0.5rem;
+}
+
+/* Remove Separator for Last Item */
+.breadcrumb-item:last-child::after {
+    content: "";
+}
+
+/* Current Page */
+.breadcrumb-item.active {
+    color: #6c757d;
+    font-weight: bold;
+    pointer-events: none;
+}
 
 .btn-primary:hover{
     cursor: pointer;
