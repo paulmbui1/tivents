@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clickable: true,
       },
       autoplay: {
-        delay: 3000, // 3 seconds
+        delay: 3500, // slide after 3.5 seconds
         disableOnInteraction: false,
       },
     });

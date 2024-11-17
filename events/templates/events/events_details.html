@@ -9,15 +9,28 @@
             <img class="hero-img" src="{{ event.image.url }}" alt="{{ event.title }}">
         </div>
     <div class="col-40">
-        <h2>Event Name: {{event.name}}</h2>
-        <p>Event description : {{ event.description }}</p>
-        <p>
+        <h2 class="my-1">Event Name: {{event.name}}</h2>
+        <p class="my-1">Event description : {{ event.description }}</p>
+        <p class="centre2">
             <i class="fa-solid fa-calendar-days"></i>{{ event.date }} <br>
             <i class="fa-solid fa-clock"></i>{{ event.time }} <br>
             <i class="fa-solid fa-location-dot"></i>{{ event.location }}
           </p>
+    <h2 class="my-1">Book This Event</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-primary">Book Now</button>
+    </form>
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <p class="success">{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
     </div>
-        
-    </div>
+    
     
 {% endblock %}
