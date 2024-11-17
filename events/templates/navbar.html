@@ -37,13 +37,14 @@
             </ul>
           </div>
           <div class="item">
-            <form class="searchForm" action="" method="get">
+            <form class="searchForm" action="{% url 'search_results' %}" method="get">
               <input
                 class="searchinput"
                 placeholder="Search Events..."
                 type="text"
-                name="search"
+                name="q"
                 id="searchform"
+                autocomplete="off"
               />
               <button class="btn-search" type="submit">
                 <i class="fa fa-search"></i>
@@ -100,13 +101,14 @@
             <li class="nav-li"><a href="#">About</a></li>
             <li class="nav-li"><a href="#">Contact</a></li>
           </ul>
-          <form class="searchForm" action="" method="get">
+          <form class="searchForm" action="{% url 'search_results' %}" method="get">
             <input
               class="searchinput"
               placeholder="Search Events..."
               type="text"
-              name="search"
+              name="q"
               id="searchform"
+              autocomplete="off"
             />
             <button class="btn-search" type="submit">
               <i class="fa fa-search"></i>

@@ -1,3 +1,4 @@
+//imitialize slider
 document.addEventListener('DOMContentLoaded', function () {
     const swiper = new Swiper('.swiper', {
       loop: true,
@@ -18,6 +19,8 @@ document.addEventListener('DOMContentLoaded', function () {
       },
     });
   });
+
+//Scroll to the top button
   function scrollToTop() {
     window.scrollTo({
       top: 0,
@@ -28,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function darkmode() {
     document.body.classList.toggle("darkmode");
   }
-  
+  // mobile menu toggle
   function menutoggle() {
     const hamburgerIcon = document.getElementById("hamburgerIcon");
     menu = document.querySelector(".menu-content");
@@ -41,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
       hamburgerIcon.classList.add("fa-times");
     }
   }
+  //Menu dropdown show and hide on hove
   const dropdown = document.getElementById("dropdown");
   const dropdownItems = document.getElementById("dropdown-items");
   dropdown.addEventListener("mouseover", hover);

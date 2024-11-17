@@ -228,7 +228,6 @@ form {
     font-weight: bold;
     pointer-events: none;
 }
-
 .btn-primary:hover{
     cursor: pointer;
     background-color: #e6f7f4;

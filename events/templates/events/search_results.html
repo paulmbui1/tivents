@@ -1,0 +1,45 @@
+{% include 'base.html' %}
+<main>
+  <div class="breadcrumb">
+    <a href="/">Home</a> &gt; <a href="/events">Events</a> &gt;
+    <span>Search Results</span>
+  </div>
+
+  <div class="container">
+    <h2>Search Results for "{{ query }}"</h2>
+  </div>
+  <div class="container">
+    {% for event in events %}
+    <div class="card">
+      <a class="border-none" href="event_detail/{{event.id}}">
+        <img src="{{ event.image.url }}" alt="{{ event.name }}" />
+        <h2>{{ event.name }}</h2>
+      </a>
+      <p class="m-1">
+        <strong><i class="fa-solid fa-layer-group"></i></strong> {{ event.category }}
+      </p>
+      <p class="m-1">
+        <strong><i class="fa-solid fa-calendar-days"></i> </strong> {{ event.date }}
+      </p>
+      <p class="m-1">
+        <strong><i class="fa-regular fa-clock"></i></strong> {{ event.time }}
+      </p>
+      <p class="m-1">
+        <strong><i class="fa-solid fa-location-dot"></i></strong> {{ event.location }}
+      </p>
+    </div>
+    {% empty %}
+  <p>No events found for your search.</p>
+  {% endfor %}
+  </div>
+
+  <div class="pagination">
+    {% if events.has_previous %}
+    <a href="?q={{ query }}&page={{ events.previous_page_number }}">Previous</a>
+    {% endif %}
+    <span>Page {{ events.number }} of {{ events.paginator.num_pages }}</span>
+    {% if events.has_next %}
+    <a href="?q={{ query }}&page={{ events.next_page_number }}">Next</a>
+    {% endif %}
+  </div>
+</main>
