@@ -1,0 +1,72 @@
+{% include 'base.html' %}
+    <main>
+    
+      <div class="swiper">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+          <!-- Slides -->
+          <div class="swiper-slide">
+            <div class="container">
+                {% for event in events %}
+              <div class="col-3">
+                <img
+                  class="hero-img"
+                  src="{{ event.image.url }}"
+                  alt="{{ event.name }}"
+                />
+              </div>
+              <div class="col-40 centre">
+                <span
+                  ><i class="fa-solid fa-layer-group"></i
+                  >{{event.category}}</span
+                >
+                <h2>{{event.name}}</h2>
+                <p>
+                  <i class="fa-solid fa-calendar-days"></i>{{event.date}}
+                  <i class="fa-regular fa-clock"></i>{{event.time}}
+                  <i class="fa-solid fa-location-dot"></i>{{event.location}}
+                </p>
+                <button class="btn-primary" type="button">Book ticket</button>
+              </div>
+              
+            </div>
+              {% empty %}
+              <p>No events available.</p>
+              {% endfor %}
+          </div>
+        </div>
+      </div>
+    
+    <div class="container">
+      <h2>Popular/upcoming events</h2>
+    </div>
+      <div class="container">
+        {% for event in events %}
+            <div class="card">
+        <a class="border-none" href="event_detail/{{event.id}}">
+          <img src="{{ event.image.url }}" alt="{{ event.name }}" />
+          <h2>{{ event.name }}</h2>
+        </a> 
+        <span class="centre">
+          <p>
+            <i class="fa-solid fa-calendar-days"></i>{{ event.date }}
+            <i class="fa-solid fa-clock"></i>{{ event.time }}
+            <i class="fa-solid fa-location-dot"></i>{{ event.location }}
+          </p>
+        </span>
+      </div>
+{#        <div class="card">#}
+{#          <img src="{{ event.image.url }}" alt="{{ event.name }}" />#}
+{#          <h2>{{ event.name }}</h2>#}
+{#          <p><strong>Category:</strong> {{ event.category }}</p>#}
+{#          <p><strong>Date:</strong> {{ event.date }}</p>#}
+{#          <p><strong>Time:</strong> {{ event.time }}</p>#}
+{#          <p><strong>Location:</strong> {{ event.location }}</p>#}
+{#          <p>{{ event.description }}</p>#}
+{#        </div>#}
+        {% empty %}
+        <p>No events available.</p>
+        {% endfor %}
+      </div>
+    </main>
+

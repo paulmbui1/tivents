@@ -1,0 +1,116 @@
+      <nav class="nav menu-lg">
+        <div class="menu">
+          <div class="item">
+            <h2 class=""><a href="/">Tivents</a></h2>
+          </div>
+          <div class="item">
+            <ul class="">
+              <li class="nav-li"><a href="/">Home</a></li>
+              <li class="nav-li"><a href="/events">Events</a></li>
+              <li class="dropdown nav-li" id="dropdown">
+                <a href="#">Categories</a><i class="fa fa-caret-down"></i>
+                <ul id="dropdown-items" class="dropdown-items hidden">
+                  <li class="nav-li">
+                    <a href="#" target="_blank" rel="noopener noreferrer"
+                      >Music</a
+                    >
+                  </li>
+                  <li class="nav-li">
+                    <a href="#" target="_blank" rel="noopener noreferrer"
+                      >Comedy</a
+                    >
+                  </li>
+                  <li class="nav-li">
+                    <a href="#" target="_blank" rel="noopener noreferrer"
+                      >Tech</a
+                    >
+                  </li>
+                  <li class="nav-li">
+                    <a href="#" target="_blank" rel="noopener noreferrer"
+                      >Professional</a
+                    >
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-li"><a href="#">About</a></li>
+              <li class="nav-li"><a href="#">Contact</a></li>
+            </ul>
+          </div>
+          <div class="item">
+            <form class="searchForm" action="" method="get">
+              <input
+                class="searchinput"
+                placeholder="Search Events..."
+                type="text"
+                name="search"
+                id="searchform"
+              />
+              <button class="btn-search" type="submit">
+                <i class="fa fa-search"></i>
+              </button>
+            </form>
+          </div>
+          <div class="item">
+            <a class="border-none" href="#">
+              <button class="btn-primary" type="button">Add Event</button>
+            </a>
+
+            <button
+              type="button"
+              class="btn-primary-outline"
+              onclick="darkmode()"
+            >
+              <i class="fa fa-moon"></i>
+            </button>
+          </div>
+        </div>
+      </nav>
+      <nav class="nav mobile-menu">
+        <div class="menu">
+          <div class="item">
+            <a class="logo border-none" href="/">Tivents</a>
+          </div>
+          <div class="item">
+            <a class="border-none" href="#">
+              <button class="btn-primary" type="button">Add Event</button>
+            </a>
+            <button
+              type="button"
+              class="btn-primary-outline"
+              onclick="darkmode()"
+            >
+              <i class="fa fa-moon"></i>
+            </button>
+
+            <button
+              type="button"
+              class="btn-primary-outline hamburger"
+              onclick="menutoggle()"
+            >
+              <i id="hamburgerIcon" class="fa fa-bars"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="menu-content hidden">
+          <ul class="menu-list">
+            <li class="nav-li"><a href="#">Home</a></li>
+            <li class="nav-li"><a href="/events">Events</a></li>
+            <li class="dropdown nav-li"><a href="#">Categories</a></li>
+            <li class="nav-li"><a href="#">About</a></li>
+            <li class="nav-li"><a href="#">Contact</a></li>
+          </ul>
+          <form class="searchForm" action="" method="get">
+            <input
+              class="searchinput"
+              placeholder="Search Events..."
+              type="text"
+              name="search"
+              id="searchform"
+            />
+            <button class="btn-search" type="submit">
+              <i class="fa fa-search"></i>
+            </button>
+          </form>
+        </div>
+      </nav>

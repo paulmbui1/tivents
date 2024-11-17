@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+    <h1>Event Details</h1>
+    </div>
+    
+    <div class="container">
+    <div class="col-3">
+            <img class="hero-img" src="{{ event.image.url }}" alt="{{ event.title }}">
+        </div>
+    <div class="col-40">
+        <h2>Event Name: {{event.name}}</h2>
+        <p>Event description : {{ event.description }}</p>
+        <p>
+            <i class="fa-solid fa-calendar-days"></i>{{ event.date }} <br>
+            <i class="fa-solid fa-clock"></i>{{ event.time }} <br>
+            <i class="fa-solid fa-location-dot"></i>{{ event.location }}
+          </p>
+    </div>
+        
+    </div>
+    
+{% endblock %}
