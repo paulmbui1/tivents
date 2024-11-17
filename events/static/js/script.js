@@ -40,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
       hamburgerIcon.classList.add("fa-times");
     }
   }
-  
   const dropdown = document.getElementById("dropdown");
   const dropdownItems = document.getElementById("dropdown-items");
   dropdown.addEventListener("mouseover", hover);
@@ -53,4 +52,30 @@ document.addEventListener('DOMContentLoaded', function () {
   function hover() {
     dropdownItems.classList.toggle("hidden");
   }
-  
+
+
+   // Get references to the ticket type and quantity fields
+    const ticketTypeSelect = document.getElementById("id_ticket_type");
+    const quantityInput = document.getElementById("id_number_of_tickets");
+    const totalPriceSpan = document.getElementById("total_price");
+
+    // Calculate total price whenever the ticket type or quantity is changed
+    function updateTotalPrice() {
+        const ticketTypeId = ticketTypeSelect.value;
+        const quantity = quantityInput.value;
+
+        // Make an AJAX call to fetch the ticket price based on the selected type
+        fetch(`/get_ticket_price/${ticketTypeId}/`)
+            .then(response => response.json())
+            .then(data => {
+                const totalPrice = data.price * quantity;
+                totalPriceSpan.textContent = `${totalPrice} KSH`;
+            });
+    }
+
+    // Add event listeners to update total price on changes
+    ticketTypeSelect.addEventListener('change', updateTotalPrice);
+    quantityInput.addEventListener('input', updateTotalPrice);
+
+    // Initial update on page load
+    updateTotalPrice();

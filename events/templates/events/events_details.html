@@ -20,15 +20,20 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
+          <label for="total_price">Total Price:</label>
+    <span id="total_price"></span>
         <button type="submit" class="btn-primary">Book Now</button>
+        
     </form>
-    {% if messages %}
+   <div class="container">
+     {% if messages %}
         <div>
             {% for message in messages %}
                 <p class="success">{{ message }}</p>
             {% endfor %}
         </div>
     {% endif %}
+    </div>
 </div>
     </div>
     
