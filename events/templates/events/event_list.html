@@ -3,7 +3,7 @@
 
 <div class="swiper">
   <div class="swiper-wrapper">
-    {% for event in events %}
+   {% for event in recent_events %}
     <div class="swiper-slide">
       <div class="container">
         <div class="col-3">
@@ -22,7 +22,7 @@
       </div>
     </div>
     {% empty %}
-    <p>No events available for the slider.</p>
+    <p>No Recent events available for the slider.</p>
     {% endfor %}
   </div>
   <!-- Add Pagination if needed -->
@@ -36,19 +36,17 @@
       <h2>Popular/upcoming events</h2>
     </div>
       <div class="container">
-        {% for event in events %}
+       {% for event in page_obj %}
             <div class="card">
         <a class="border-none" href="event_detail/{{event.id}}">
           <img src="{{ event.image.url }}" alt="{{ event.name }}" />
           <h2>{{ event.name }}</h2>
-        </a>
-        <span class="centre">
-          <p>
-            <i class="fa-solid fa-calendar-days"></i>{{ event.date }}
-            <i class="fa-solid fa-clock"></i>{{ event.time }}
-            <i class="fa-solid fa-location-dot"></i>{{ event.location }}
-          </p>
-        </span>
+            </a>
+                <p class="m-1"><strong><i class="fa-solid fa-layer-group"></i></strong> {{ event.category }}</p>
+          <p class="m-1"> <strong><i class="fa-solid fa-calendar-days"></i> </strong> {{ event.date }}</p>
+          <p class="m-1"><strong><i class="fa-regular fa-clock"></i></strong> {{ event.time }}</p>
+         <p class="m-1"><strong><i class="fa-solid fa-location-dot"></i></strong> {{ event.location }}</p>
+        
       </div>
 {#        <div class="card">#}
 {#          <img src="{{ event.image.url }}" alt="{{ event.name }}" />#}
@@ -63,5 +61,23 @@
         <p>No events available.</p>
         {% endfor %}
       </div>
+    <!-- Pagination Controls -->
+<div class="pagination">
+  <span class="step-links">
+    {% if page_obj.has_previous %}
+    <a href="?page=1">&laquo; First</a>
+    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    <span class="current">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+    <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+    {% endif %}
+  </span>
+</div>
     </main>
 

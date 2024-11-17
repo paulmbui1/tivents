@@ -170,6 +170,28 @@ form {
     margin: 0 auto;
     max-width: 500px;
 }
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination a,
+.pagination span {
+  margin: 0 5px;
+  padding: 8px 16px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.pagination a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.pagination .current {
+  font-weight: bold;
+}
 
 .btn-primary:hover{
     cursor: pointer;
@@ -253,7 +275,6 @@ form {
 }
 .card h2{
     padding: 10px;
-    text-align: center;
 }
 .card img{
     width: 400px;
@@ -275,6 +296,9 @@ margin: 10px 0;
 }
 .mx-1{
     margin: 0 10px;
+}
+.m-1{
+    padding: 10px;
 }
 .swiper {
     width: 100%;

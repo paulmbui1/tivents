@@ -1,13 +1,23 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import BookingForm
 from .models import Event, TicketType, Booking
 
 
 def event_list(request):
-    events = Event.objects.all()
-    return render(request, 'events/event_list.html'  , {'events': events}
-                  )
+    events = Event.objects.order_by('-date')  # Order events by most recent first
+    paginator = Paginator(events, 6)  # Show 6 events per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Fetch only the 5 most recent events for the slider
+    recent_events = events[:5]
+
+    return render(request, 'events/event_list.html', {
+        'page_obj': page_obj,
+        'recent_events': recent_events,
+    })
 def root(request):
     return render(request, "base.html")
 # def event_detail(request, event_id):
