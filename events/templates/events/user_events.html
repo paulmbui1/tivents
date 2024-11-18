@@ -1,17 +1,68 @@
 {% extends "base.html" %}
-{% block content %}
-<div class="container">
-    <h2>My Events</h2>
-    {% for event in events %}
-    <div class="card">
-        <h3>{{ event.name }}</h3>
-        <p>{{ event.description }}</p>
-        <p>
-            <a href="{% url 'delete_event' event.id %}" class="btn-danger">Delete</a>
-        </p>
+{% block content %} 
+ <div class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'event_list' %}">Events</a>
+            </li>
+        </ol>
+    </nav>
+</div>
+
+    <div class="container ">
+    <div class="col-80">
+        <h2>My Events</h2>
     </div>
-    {% empty %}
+    <div class="col-1 mx-2">
+          <a href="{% url 'add_event' %}" class="border-none">
+            <button class="btn-primary-outline" type="button"><i class="fa fa-plus-circle"></i>Add Events</button>
+        </a>
+    </div>
+      
+        
+    </div>
+    
+<div class="container">
+    
+    <table id="myEventsTable">
+    <thead>
+    <tr>
+           <th>Image</th>
+           <th>Event Name</th>
+           <th>Description</th>
+           <th>Action</th>
+        </tr>
+    </thead>
+            <tbody>
+            {% for event in events %}
+             <tr>
+            <td> <img src="{{ event.image.url }}" alt="{{ event.name }}"></td>
+            <td><h3>{{ event.name }}</h3></td>
+            <td><p>{{ event.description }}</p></td>
+            <td> <a href="{% url 'delete_event' event.id %}">
+                <button  class="btn-danger"><i class="fa fa-trash"></i></button></a>
+                
+                <a href="{% url 'delete_event' event.id %}">
+                    <button class="btn-primary-outline" >
+                        <i class="fa fa-pen"></i>
+                    </button>
+                    
+                </a>
+            </td>
+        </tr>  
+            {% empty %}
     <p>You have no events.</p>
     {% endfor %}
+            </tbody>
+       
+      
+    </table>
+        
+   
 </div>
 {% endblock %}

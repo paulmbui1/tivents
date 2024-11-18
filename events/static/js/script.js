@@ -154,3 +154,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+
+
+ $(document).ready(function() {
+        $('#myEventsTable').DataTable({
+            paging: true,          // Enable pagination
+            searching: true,       // Enable search/filter
+            ordering: true,        // Enable column sorting
+            columnDefs: [
+                { orderable: false, targets: [0, 3] } // Disable sorting for the Image and Action columns
+            ],
+            language: {
+                emptyTable: "You have no events to display."
+            }
+        });
+    });

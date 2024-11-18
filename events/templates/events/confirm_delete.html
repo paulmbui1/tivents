@@ -1,12 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
+    <div class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'list_user_events' %}">My Events</a>
+            </li>
+        </ol>
+    </nav>
+</div>
+    <div class="container centre">
     <h2>Confirm Delete</h2>
-    <p>Are you sure you want to delete the event "{{ event.name }}"?</p>
-    <form method="post">
+    </div>
+    
+<div class="container centre">
+    <div class="card">
+        <p class="m-1">Are you sure you want to delete the event<b> "{{ event.name }}"</b> ?</p>
+        <span class="centre">This action is irreversible!</span>
+        <form method="post" class="m-1 centre">
         {% csrf_token %}
         <button type="submit" class="btn-danger">Yes, Delete</button>
         <a href="{% url 'list_user_events' %}" class="btn-secondary">Cancel</a>
     </form>
+    </div>
+    
+    
 </div>
 {% endblock %}

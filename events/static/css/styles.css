@@ -162,6 +162,46 @@ ul{
    border: none;
    border-radius: 5px;
 }
+
+/* Adjust table width */
+#myEventsTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+#myEventsTable img{
+    width: 50%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+
+}
+#myEventsTable th, td {
+    padding: 10px;
+    border: 1px solid black;
+  border-collapse: collapse;
+}
+/* Highlight hover rows */
+#myEventsTable tbody tr:hover {
+    background-color: #f5f5f5;
+}
+.darkmode #myEventsTable th, td{
+    border: 1px solid   #868686;
+}
+.darkmode #myEventsTable tbody tr:hover{
+    background-color: #908f96;
+}
+/* Button styling */
+.btn-danger {
+    background-color: #ca0101;
+    color: #eeeeee;
+    padding: 5px 10px;
+    text-decoration: none;
+    border-radius: 3px;
+}
+.btn-danger:hover {
+    background-color: #bc0505;
+    color: #dff0d8;
+}
+
 /* Style for the form inputs */
 form input,
 form textarea,
@@ -193,7 +233,15 @@ form label {
     display: inline-block;
     color: #444;
 }
-
+.darkmode form input,
+form textarea,
+form select{
+   color: #dff0d8;
+    border: 1px solid #908f96;
+}
+.darkmode form label{
+    color: #dff0d8;
+}
 /* Submit button */
 form .btn-primary {
     width: auto;
@@ -364,6 +412,9 @@ form {
 .col-40{
     width: 40%;
 }
+.col-80{
+    width: 80%;
+}
 .text-centre{
     text-align: center;
 }
@@ -424,6 +475,9 @@ margin: 10px 0;
 }
 .mx-1{
     margin: 0 10px;
+}
+.mx-2{
+    margin: 0 20px;
 }
 .m-1{
     padding: 10px;
@@ -562,5 +616,7 @@ margin: 10px 0;
        form {
         max-width: 100%;
     }
-
+#myEventsTable img{
+    width: 5rem;
+}
 }
