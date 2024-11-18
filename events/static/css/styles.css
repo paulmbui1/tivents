@@ -315,7 +315,9 @@ form {
 .col-40{
     width: 40%;
 }
-
+.text-centre{
+    text-align: center;
+}
 .centre{
    display: flex;
    gap: 10px;
