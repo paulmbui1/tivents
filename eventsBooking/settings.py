@@ -131,8 +131,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # settings.py
-LOGIN_REDIRECT_URL = '/'  # Redirect to the homepage after login
+LOGIN_REDIRECT_URL = '/events/my-events/'  # Redirect to the homepage after login
 
 # settings.py
-LOGOUT_REDIRECT_URL = '/'  # Redirect to the homepage after logout
+LOGOUT_REDIRECT_URL = '/login/'  # Redirect to the homepage after logout
 

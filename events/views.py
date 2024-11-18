@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import BookingForm, EventForm, SignUpForm
@@ -104,8 +104,12 @@ def signup(request):
             user.set_password(form.cleaned_data['password'])  # Hash the password
             user.save()
             login(request, user)  # Log the user in after signup
-            return redirect('/')  # Redirect to the home page (or any page you want)
+            return redirect('/events/my-events/')  # Redirect to my events page (or any page you want)
     else:
         form = SignUpForm()
 
     return render(request, 'signup.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
