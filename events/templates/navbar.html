@@ -52,10 +52,24 @@
             </form>
           </div>
           <div class="item">
-            <a class="border-none" href="#">
-              <button class="btn-primary" type="button">Add Event</button>
-            </a>
-
+            <div class="dropdown nav-li" id="user-dropdown">
+            
+                <a href="#">
+                  <button class="btn-primary-outline">  
+            <i class="fa fa-user"></i> <!-- User Icon --> <i class="fa fa-caret-down"></i>
+                      </button>
+        </a>
+        <ul id="user-dropdown-items" class="dropdown-items hidden">
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'list_user_events' %}">My Events</a></li>
+                <li><a href="{% url 'add_event' %}">Add Events</a></li>
+                <li><a href="{% url 'logout' %}?next={{ request.path }}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'signup' %}">Register</a></li>
+            {% endif %}
+        </ul>
+    </div>
             <button
               type="button"
               class="btn-primary-outline"
@@ -72,9 +86,24 @@
             <a class="logo border-none" href="/">Tivents</a>
           </div>
           <div class="item">
-            <a class="border-none" href="#">
-              <button class="btn-primary" type="button">Add Event</button>
-            </a>
+            <div class="dropdown nav-li" id="user-dropdown">
+        <a href="#">
+            <button class="btn-primary-outline" type="button">
+                <i class="fa fa-user"></i> <!-- User Icon --> 
+            </button>
+            
+        </a>
+        <ul id="user-dropdown-items" class="dropdown-items hidden">
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'list_user_events' %}">My Events</a></li>
+                <li><a href="{% url 'add_event' %}">Add Events</a></li>
+                <li><a href="{% url 'logout' %}?next={{ request.path }}">Logout</a></li>
+            {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'signup' %}">Register</a></li>
+            {% endif %}
+        </ul>
+    </div>
             <button
               type="button"
               class="btn-primary-outline"

@@ -19,7 +19,7 @@ class Event(models.Model):
     location = models.CharField(max_length=200)
     image = models.ImageField(upload_to='events/')
     description = models.TextField()
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events')
     def __str__(self):
         return self.name
 

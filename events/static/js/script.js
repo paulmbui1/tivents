@@ -84,3 +84,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Initial update on page load
     updateTotalPrice();
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const userDropdown = document.getElementById("user-dropdown");
+    const dropdownItems = document.getElementById("user-dropdown-items");
+
+    userDropdown.addEventListener("click", function (e) {
+        e.stopPropagation(); // Prevent clicking elsewhere from closing immediately
+        dropdownItems.classList.toggle("hidden");
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function () {
+        dropdownItems.classList.add("hidden");
+    });
+});
