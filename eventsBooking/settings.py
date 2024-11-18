@@ -136,3 +136,6 @@ LOGIN_REDIRECT_URL = '/events/my-events/'  # Redirect to the homepage after logi
 # settings.py
 LOGOUT_REDIRECT_URL = '/login/'  # Redirect to the homepage after logout
 
+# settings.py
+
+

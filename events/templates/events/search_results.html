@@ -1,13 +1,16 @@
 {% include 'base.html' %}
+
 <main>
-  <div class="breadcrumb">
+<div class="container">
+      <div class="breadcrumb">
     <a href="/">Home</a> &gt; <a href="/events">Events</a> &gt;
-    <span>Search Results</span>
   </div>
 
   <div class="container">
-    <h2>Search Results for "{{ query }}"</h2>
+    <h2>Search Results for <b>"{{ query }}"</b> </h2>
   </div>
+</div>
+
   <div class="container">
     {% for event in events %}
     <div class="card">

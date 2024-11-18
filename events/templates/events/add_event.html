@@ -1,11 +1,30 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
+    <div class="container centre">
+        <h1>Add Event</h1>
+    </div>
 <div class="container">
-    <h2>Add Event</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn-primary">Add Event</button>
+        <div class="form-group">
+            <h2>Event Details</h2>
+            {{ form.as_p }}
+        </div>
+        <div class="form-group">
+            <h2>Tickets</h2>
+            {{ formset.management_form }}
+            <div id="ticket-forms">
+                {% for ticket_form in formset %}
+                <div class="ticket-form">
+                    <h3>Ticket {{ forloop.counter }}</h3>
+                    {{ ticket_form.as_p }}
+                    <button type="button" class="delete-ticket" data-ticket="{{ forloop.counter }}">Delete Ticket</button>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" id="add-ticket">Add Another Ticket</button>
+        </div>
+        <button type="submit" class="submit-btn">Submit</button>
     </form>
 </div>
 {% endblock %}

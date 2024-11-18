@@ -29,8 +29,32 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   //darkmode toggle
   function darkmode() {
+    // Toggle the dark mode class on the body
     document.body.classList.toggle("darkmode");
-  }
+
+    // Save the user's preference to localStorage
+    if (document.body.classList.contains("darkmode")) {
+        localStorage.setItem("theme", "dark");
+    } else {
+        localStorage.setItem("theme", "light");
+    }
+}
+
+// Apply the saved theme on page load
+function applyTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    if (savedTheme === "dark" || (!savedTheme && prefersDarkScheme)) {
+        document.body.classList.add("darkmode");
+    } else {
+        document.body.classList.remove("darkmode");
+    }
+}
+
+// Run applyTheme on page load
+applyTheme();
+
   // mobile menu toggle
   function menutoggle() {
     const hamburgerIcon = document.getElementById("hamburgerIcon");
@@ -98,5 +122,35 @@ document.addEventListener("DOMContentLoaded", function () {
     // Close dropdown when clicking outside
     document.addEventListener("click", function () {
         dropdownItems.classList.add("hidden");
+    });
+});
+//tickets add for user
+document.addEventListener("DOMContentLoaded", () => {
+    const addTicketButton = document.getElementById("add-ticket");
+    const ticketFormsContainer = document.getElementById("ticket-forms");
+    const totalForms = document.getElementById("id_form-TOTAL_FORMS"); // Hidden field tracking total forms
+    const emptyFormTemplate = ticketFormsContainer.dataset.emptyForm;
+
+    // Add a new ticket form
+    addTicketButton.addEventListener("click", () => {
+        const currentFormCount = parseInt(totalForms.value, 10); // Current form count
+        const newFormHtml = emptyFormTemplate.replace(/__prefix__/g, currentFormCount);
+        const newForm = document.createElement("div");
+        newForm.classList.add("ticket-form");
+        newForm.innerHTML = `
+            <h3>Ticket ${currentFormCount + 1}</h3>
+            ${newFormHtml}
+            <button type="button" class="delete-ticket">Delete Ticket</button>
+        `;
+        ticketFormsContainer.appendChild(newForm);
+        totalForms.value = currentFormCount + 1; // Increment form count
+    });
+
+    // Delete a ticket form
+    ticketFormsContainer.addEventListener("click", (e) => {
+        if (e.target.classList.contains("delete-ticket")) {
+            const ticketForm = e.target.closest(".ticket-form");
+            if (ticketForm) ticketForm.remove();
+        }
     });
 });

@@ -2,18 +2,19 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import BookingForm, EventForm, SignUpForm
+from .forms import BookingForm, EventForm, SignUpForm, TicketTypeForm
 from .models import Event, TicketType, Booking
 from django.db.models import Q
 from django.http import JsonResponse
 from .models import TicketType
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.forms import modelformset_factory
 
 
 def event_list(request):
     events = Event.objects.order_by('-date')  # Order events by most recent first
-    paginator = Paginator(events, 6)  # Show 6 events per page
+    paginator = Paginator(events, 15)  # Show 6 events per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -32,7 +33,7 @@ def event_detail(request, event_id):
 
     if request.method == 'POST':
         form = BookingForm(request.POST, event=event)
-        if form.is_valid():
+        if form.is_valid() :
             booking = form.save(commit=False)
             booking.event = event  # Explicitly assign the event
             booking.user = request.user  # Assuming you want to associate the booking with the logged-in user
@@ -59,7 +60,7 @@ def search_results(request):
         Q(name__icontains=query) | Q(description__icontains=query)
     )
 
-    paginator = Paginator(events, 9)  # Show 9 events per page
+    paginator = Paginator(events, 15)  # Show 15 events per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -70,17 +71,24 @@ def search_results(request):
 
 @login_required
 def add_event(request):
+    TicketFormSet = modelformset_factory(TicketType, form=TicketTypeForm, extra=0, can_delete=True)
     if request.method == "POST":
-        form = EventForm(request.POST, request.FILES)
-        if form.is_valid():
-            event = form.save(commit=False)
+        event_form = EventForm(request.POST, request.FILES)
+        formset = TicketFormSet(request.POST, queryset=TicketType.objects.none())
+        if event_form.is_valid() and formset.is_valid():
+            event = event_form.save(commit=False)
             event.user = request.user  # Assign the logged-in user
             event.save()
+            tickets = formset.save(commit=False)
+            for ticket in tickets:
+                ticket.event = event
+                ticket.save()
             messages.success(request, "Event created successfully!")
             return redirect('list_user_events')
     else:
-        form = EventForm()
-    return render(request, 'events/add_event.html', {'form': form})
+        event_form = EventForm()
+        formset = TicketFormSet(queryset=TicketType.objects.none())
+    return render(request, 'events/add_event.html', {'form': event_form, 'formset': formset})
 
 @login_required
 def list_user_events(request):
