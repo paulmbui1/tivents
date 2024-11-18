@@ -121,3 +121,17 @@ def signup(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+
+@login_required
+def edit_event(request, pk):
+    event = get_object_or_404(Event, pk=pk, user=request.user)  # Ensure user can only edit their events
+    if request.method == "POST":
+        form = EventForm(request.POST, request.FILES, instance=event)
+        if form.is_valid():
+            form.save()  # Only updates fields that are changed
+            return redirect('list_user_events')  # Redirect to the list of user's events
+    else:
+        form = EventForm(instance=event)  # Pre-fill the form with existing event data
+
+    return render(request, 'events/edit_event.html', {'form': form, 'event': event})

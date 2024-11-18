@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+     <div class="container">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{% url 'list_user_events' %}">My Events</a>
+            </li>
+        </ol>
+    </nav>
+</div>
+    <div class="container centre">
+    <h2>Edit Event: {{ event.name }}</h2>
+    </div>
+<div class="container">
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-primary">Save Changes</button>
+        <a href="{% url 'list_user_events' %}" class="btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

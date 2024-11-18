@@ -13,6 +13,7 @@ urlpatterns = [
     path('events/add/', views.add_event, name='add_event'),
     path('events/my-events/', views.list_user_events, name='list_user_events'),
     path('events/delete/<int:event_id>/', views.delete_event, name='delete_event'),
+    path('event/<int:pk>/edit/', views.edit_event, name='edit_event'),
 
     path('logout/', views.logout_view, name='logout'),
     path('login/', auth_views.LoginView.as_view(), name='login'),

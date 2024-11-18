@@ -204,6 +204,7 @@ ul{
 
 /* Style for the form inputs */
 form input,
+form text,
 form textarea,
 form select {
     width: 100%;
@@ -212,7 +213,7 @@ form select {
     border-radius: 5px;
     font-size: 1rem;
     font-family: Lato;
-    color: #333;
+    color: #1b1b1b;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
@@ -234,9 +235,8 @@ form label {
     color: #444;
 }
 .darkmode form input,
-form textarea,
-form select{
-   color: #dff0d8;
+.darkmode form textarea,
+.darkmode form select{
     border: 1px solid #908f96;
 }
 .darkmode form label{
