@@ -18,5 +18,6 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('signup/', views.signup, name='signup'),
 
+    path('category/<slug:slug>/', views.category_events, name='category_events'),
 ]
 

@@ -51,7 +51,6 @@ function applyTheme() {
         document.body.classList.remove("darkmode");
     }
 }
-
 // Run applyTheme on page load
 applyTheme();
 
@@ -68,21 +67,6 @@ applyTheme();
       hamburgerIcon.classList.add("fa-times");
     }
   }
-  //Menu dropdown show and hide on hove
-  const dropdown = document.getElementById("dropdown");
-  const dropdownItems = document.getElementById("dropdown-items");
-  dropdown.addEventListener("mouseover", hover);
-  dropdown.addEventListener("mouseleave", hoverhide);
-  dropdownItems.addEventListener("mouseover", hover);
-  dropdownItems.addEventListener("mouseleave", hoverhide);
-  function hoverhide() {
-    dropdownItems.classList.add("hidden");
-  }
-  function hover() {
-    dropdownItems.classList.toggle("hidden");
-  }
-
-
    // Get references to the ticket type and quantity fields
     const ticketTypeSelect = document.getElementById("id_ticket_type");
     const quantityInput = document.getElementById("id_number_of_tickets");
@@ -113,12 +97,10 @@ applyTheme();
 document.addEventListener("DOMContentLoaded", function () {
     const userDropdown = document.getElementById("user-dropdown");
     const dropdownItems = document.getElementById("user-dropdown-items");
-
-    userDropdown.addEventListener("click", function (e) {
+     userDropdown.addEventListener("click", function (e) {
         e.stopPropagation(); // Prevent clicking elsewhere from closing immediately
         dropdownItems.classList.toggle("hidden");
     });
-
     // Close dropdown when clicking outside
     document.addEventListener("click", function () {
         dropdownItems.classList.add("hidden");
@@ -154,18 +136,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-
-
- $(document).ready(function() {
-        $('#myEventsTable').DataTable({
-            paging: true,          // Enable pagination
-            searching: true,       // Enable search/filter
-            ordering: true,        // Enable column sorting
-            columnDefs: [
-                { orderable: false, targets: [0, 3] } // Disable sorting for the Image and Action columns
-            ],
-            language: {
-                emptyTable: "You have no events to display."
-            }
-        });
-    });

@@ -7,7 +7,18 @@ class EventCategory(models.Model):
     """Dynamic event categories."""
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
+    slug = models.SlugField(unique=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            while EventCategory.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
     def __str__(self):
         return self.name
 
@@ -76,3 +87,5 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.name} for {self.ticket_type.name} ({self.number_of_tickets} tickets) - {self.event.name} ({self.status})"
+
+

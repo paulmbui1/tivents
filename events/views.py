@@ -10,13 +10,25 @@ from .models import TicketType
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.forms import modelformset_factory
+from events.models import EventCategory
 
+
+def category_events(request, slug):
+    category = get_object_or_404(EventCategory, slug=slug)
+    events = Event.objects.filter(category=category)
+    # Paginate events: 10 per page
+    paginator = Paginator(events, 10)
+    page_number = request.GET.get('page')
+    events = paginator.get_page(page_number)
+
+    return render(request, 'events/category_events.html', {'category': category, 'events': events})
 
 def root(request):
     events = Event.objects.order_by('-date')  # Order events by most recent first
     paginator = Paginator(events, 15)  # Show 15 events per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    categories = EventCategory.objects.all()[:5]
 
     # Fetch only the 5 most recent events for the slider
     recent_events = events[:5]
@@ -24,6 +36,7 @@ def root(request):
     return render(request, 'events/event_list.html', {
         'page_obj': page_obj,
         'recent_events': recent_events,
+        'categories': categories,
     })
 
 def event_details(request, slug):

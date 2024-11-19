@@ -10,26 +10,15 @@
               <li class="dropdown nav-li" id="dropdown">
                 <a href="#">Categories</a><i class="fa fa-caret-down"></i>
                 <ul id="dropdown-items" class="dropdown-items hidden">
-                  <li class="nav-li">
-                    <a href="#" target="_blank" rel="noopener noreferrer"
-                      >Music</a
-                    >
-                  </li>
-                  <li class="nav-li">
-                    <a href="#" target="_blank" rel="noopener noreferrer"
-                      >Comedy</a
-                    >
-                  </li>
-                  <li class="nav-li">
-                    <a href="#" target="_blank" rel="noopener noreferrer"
-                      >Tech</a
-                    >
-                  </li>
-                  <li class="nav-li">
-                    <a href="#" target="_blank" rel="noopener noreferrer"
-                      >Professional</a
-                    >
-                  </li>
+                    {% for category in categories|slice:":5" %}
+                        <li class="nav-li">
+                            <a href="{% url 'category_events' category.slug %}">
+                                {{ category.name }}
+                            </a>
+                        </li>
+                        {% empty %}
+                        <li class="nav-li">No Categories Available</li>
+                        {% endfor %}
                 </ul>
               </li>
               <li class="nav-li"><a href="#">About</a></li>
@@ -95,7 +84,7 @@
             </button>
             
         </a>
-        <ul id="user-dropdown-items" class="dropdown-items hidden">
+        <ul id="user-dropdown-items" class="dropdown-items">
             {% if user.is_authenticated %}
                 <li><a href="{% url 'list_user_events' %}">My Events</a></li>
                 <li><a href="{% url 'add_event' %}">Add Events</a></li>
@@ -126,7 +115,6 @@
         <div class="menu-content hidden">
           <ul class="menu-list">
             <li class="nav-li"><a href="#">Home</a></li>
-            <li class="dropdown nav-li"><a href="#">Categories</a></li>
             <li class="nav-li"><a href="#">About</a></li>
             <li class="nav-li"><a href="#">Contact</a></li>
           </ul>
