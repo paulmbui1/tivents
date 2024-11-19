@@ -12,9 +12,9 @@ from django.contrib.auth.models import User
 from django.forms import modelformset_factory
 
 
-def event_list(request):
+def root(request):
     events = Event.objects.order_by('-date')  # Order events by most recent first
-    paginator = Paginator(events, 15)  # Show 6 events per page
+    paginator = Paginator(events, 15)  # Show 15 events per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -25,8 +25,6 @@ def event_list(request):
         'page_obj': page_obj,
         'recent_events': recent_events,
     })
-def root(request):
-    return render(request, "base.html")
 
 def event_details(request, slug):
     event = get_object_or_404(Event, slug=slug)

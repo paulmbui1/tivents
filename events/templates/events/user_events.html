@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "events/event_list.html" %}
 
 {% block title %}
     My Events
@@ -11,9 +11,6 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="/">Home</a>
-            </li>
-            <li class="breadcrumb-item">
-                <a href="{% url 'event_list' %}">Events</a>
             </li>
         </ol>
     </nav>
