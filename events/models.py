@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.text import slugify
 
 
 class EventCategory(models.Model):
@@ -20,8 +21,20 @@ class Event(models.Model):
     image = models.ImageField(upload_to='events/')
     description = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events')
+    slug = models.SlugField(unique=True, blank=True)
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.name)
+            slug = base_slug
+            counter = 1
+            while Event.objects.filter(slug=slug).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
 
 class TicketType(models.Model):

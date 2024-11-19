@@ -28,7 +28,7 @@
               <i class="fa-solid fa-location-dot"></i> {{ event.location }}
             </p>
             <a
-              href="event_detail/{{event.id}}"
+              href="{% url 'event_details' slug=event.slug %}"
               class="btn-primary"
               type="button"
               >Book ticket</a
@@ -53,7 +53,7 @@
   <div class="container">
     {% for event in page_obj %}
     <div class="card">
-      <a class="border-none" href="event_detail/{{event.id}}">
+      <a class="border-none" href="{% url 'event_details' slug=event.slug %}">
         <img src="{{ event.image.url }}" alt="{{ event.name }}" />
         <h2>{{ event.name }}</h2>
       </a>

@@ -28,8 +28,8 @@ def event_list(request):
 def root(request):
     return render(request, "base.html")
 
-def event_detail(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
+def event_details(request, slug):
+    event = get_object_or_404(Event, slug=slug)
 
     if request.method == 'POST':
         form = BookingForm(request.POST, event=event)
@@ -40,7 +40,7 @@ def event_detail(request, event_id):
             try:
                 booking.save()
                 messages.success(request, "Booking successful!")
-                return redirect('event_detail', event_id=event.id)
+                return redirect('event_details', event_id=event.id)
             except ValueError as e:
                 form.add_error(None, str(e))
     else:
@@ -59,7 +59,6 @@ def search_results(request):
     events = Event.objects.filter(
         Q(name__icontains=query) | Q(description__icontains=query)
     )
-
     paginator = Paginator(events, 15)  # Show 15 events per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
