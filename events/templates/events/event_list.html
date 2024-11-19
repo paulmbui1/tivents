@@ -1,5 +1,10 @@
-{% include 'base.html' %}
-<main>
+{% extends 'base.html' %}
+{% block title %}
+    Events List
+{% endblock %}
+
+{% block content %}
+        <main>
   <div class="swiper">
     <div class="swiper-wrapper">
       {% for event in recent_events %}
@@ -88,3 +93,4 @@
     </span>
   </div>
 </main>
+{% endblock %}

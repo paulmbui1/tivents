@@ -3,8 +3,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Tivents - Event booking system</title>
+  <title>Tivents - 
+      {% block title %}
+      Home
+      {% endblock %} 
+  </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <meta name="keywords" content="{%  block keyword %} Event listing {% endblock %}">
+ <meta name="description" content="{%  block description %} Event listing {% endblock %}">
     <link rel="stylesheet" href="{% static 'css/swiper-bundle.min.css '%} " />
     <link rel="stylesheet" href="{% static 'css/datatables.min.css '%} " />
         <script src="{% static 'js/swiper-bundle.min.js' %} "></script>
