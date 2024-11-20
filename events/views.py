@@ -51,7 +51,7 @@ def event_details(request, slug):
             try:
                 booking.save()
                 messages.success(request, "Booking successful!")
-                return redirect('event_details', event_id=event.id)
+                return redirect('event_details', slug=slug)
             except ValueError as e:
                 form.add_error(None, str(e))
     else:

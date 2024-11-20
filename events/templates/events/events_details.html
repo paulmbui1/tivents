@@ -1,13 +1,9 @@
 {% extends "events/event_list.html" %}
-{% block title %}
-    {{ event.name }}
-{% endblock %}
+{% block title %}{{ event.name }}{% endblock %}
 
-{% block keyword %}
-    {{ event.name }}
-{% endblock %}
+{% block keyword %}{{ event.name }}{% endblock %}
 
-{%  block description %} {{ event.description }} {% endblock %}
+{%  block description %} {{ event.description }}{% endblock %}
 {% block content %}
     <div class="container">
     <!-- Breadcrumb -->
@@ -23,29 +19,17 @@
     <div class="container">
     <div class="col-3">
            <h2 class="my-1">{{event.name}}</h2>
-     <p class="my-1">Event description : {{ event.description }}</p>
          <p class="m-1 centre2">
             <i class="fa-solid fa-calendar-days"></i>{{ event.date }} <br>
             <i class="fa-solid fa-clock"></i>{{ event.time }} <br>
             <i class="fa-solid fa-location-dot"></i>{{ event.location }}
           </p>
             <img class="hero-img" src="{{ event.image.url }}" alt="{{ event.title }}">
+        <p class="my-1"><b> Event description : </b> <br> {{ event.description }}</p>
         </div>
    
     <div class="col-40">
-        
-        
-        
-    <h2 class="my-1">Book This Event</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-          <label for="total_price">Total Price:</label>
-    <span id="total_price"></span>
-        <button type="submit" class="btn-primary">Book Now</button>
-        
-    </form>
-   <div class="container">
+        <div class="container">
      {% if messages %}
         <div>
             {% for message in messages %}
@@ -54,6 +38,18 @@
         </div>
     {% endif %}
     </div>
+        
+        
+    <h2 class="">Book This Event</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+          <label for="total_price">Total Price:</label>
+    <span id="total_price"></span>
+        <button type="submit" class="btn-primary">Book Now</button>
+        
+    </form>
+   
 </div>
     </div>
     

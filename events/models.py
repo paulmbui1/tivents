@@ -5,9 +5,10 @@ from django.utils.text import slugify
 
 class EventCategory(models.Model):
     """Dynamic event categories."""
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=65, unique=True)
     description = models.TextField(blank=True, null=True)
-    slug = models.SlugField(unique=True, blank=True)
+    # slug = models.SlugField(unique=True, blank=True)
+    slug = models.SlugField(max_length=65, unique=True)  # Previously max_length=255
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -24,11 +25,12 @@ class EventCategory(models.Model):
 
 
 class Event(models.Model):
-    name = models.CharField(max_length=200)
+    # name = models.CharField(max_length=200) # commented because it could not fit mysql 1000bytte limit
+    name = models.CharField(max_length=65, db_index=False)
     category = models.ForeignKey(EventCategory, on_delete=models.CASCADE, related_name="events")
     date = models.DateField()
     time = models.TimeField()
-    location = models.CharField(max_length=200)
+    location = models.CharField(max_length=65)
     image = models.ImageField(upload_to='events/')
     description = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events')
@@ -51,7 +53,7 @@ class Event(models.Model):
 class TicketType(models.Model):
     """Dynamic ticket types for events."""
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="ticket_types")
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=65)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     available_quantity = models.PositiveIntegerField()
 
@@ -61,7 +63,7 @@ class TicketType(models.Model):
 
 class Booking(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='bookings')
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=65)
     email = models.EmailField()
     phone = models.CharField(max_length=15, blank=True)
     booked_on = models.DateTimeField(auto_now_add=True)
