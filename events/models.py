@@ -25,7 +25,7 @@ class EventCategory(models.Model):
 
 
 class Event(models.Model):
-    # name = models.CharField(max_length=200) # commented because it could not fit mysql 1000bytte limit
+    # name = models.CharField(max_length=200) # commented because it could not fit mysql 1000byte limit
     name = models.CharField(max_length=65, db_index=False)
     category = models.ForeignKey(EventCategory, on_delete=models.CASCADE, related_name="events")
     date = models.DateField()

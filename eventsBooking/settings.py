@@ -1,3 +1,4 @@
+
 """
 Django settings for eventsBooking project.
 
@@ -151,5 +152,6 @@ LOGIN_REDIRECT_URL = '/events/my-events/'  # Redirect to the homepage after logi
 LOGOUT_REDIRECT_URL = '/login/'  # Redirect to the homepage after logout
 
 # settings.py
+
 
 

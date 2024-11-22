@@ -23,16 +23,12 @@
       <div class="swiper-slide">
         <div class="container">
           <div class="col-3">
-            <img
-              class="hero-img"
-              src="{{ event.image.url }}"
-              alt="{{ event.name }}"
-            />
+              <a class="border-none" href="{% url 'event_details' slug=event.slug %}">
+                  <img class="hero-img" src="{{ event.image.url }}" alt="{{ event.name }}"/>
+              </a>
           </div>
           <div class="col-40 centre">
-            <span
-              ><i class="fa-solid fa-layer-group"></i> {{ event.category }}</span
-            >
+            <span><i class="fa-solid fa-layer-group"></i> {{ event.category }}</span>
             <h2>{{ event.name }}</h2>
             <p>
               <i class="fa-solid fa-calendar-days"></i> {{ event.date }}
@@ -42,9 +38,7 @@
             <a
               href="{% url 'event_details' slug=event.slug %}"
               class="btn-primary"
-              type="button"
-              >Book ticket</a
-            >
+              type="button">Book ticket</a>
           </div>
         </div>
       </div>
