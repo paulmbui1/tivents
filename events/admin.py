@@ -15,6 +15,7 @@ class TicketTypeInline(admin.TabularInline):
 class EventAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'date', 'time', 'location', 'image', 'description')
     inlines = [TicketTypeInline]
+
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
     list_display = ('name', 'event', 'booked_on', 'status')  # Customize fields to display in the admin list view

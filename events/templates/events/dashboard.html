@@ -50,7 +50,7 @@
 
 <div class="container">
 
-    <table class="myEventsTable">
+    <table id="eventsTable" class="myEventsTable">
         <thead>
         <tr>
                 <th>
@@ -62,7 +62,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for event in page_obj %}
+            {% for event in event_metrics %}
             <tr>
                 <td> <a href="{% url 'event_booking_detail' event.id %}">{{ event.name }}</a>
                     </td>
@@ -73,18 +73,19 @@
             {% endfor %}
         </tbody>
     </table>
-        <!-- Pagination controls -->
-    <div class="pagination">
-        {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-        {% endif %}
-
-        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-
-        {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Next</a>
-        {% endif %}
-    </div>
-
 </div>
+
+<!-- Initialize DataTables -->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#eventsTable').DataTable({
+             responsive: true,
+            "pageLength": 8,  // Set the default number of rows per page
+            "lengthChange": true, // Disable the "Show entries" option
+            "order": [[1, 'des']],
+            dom: 'Bfrtip',
+                buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+        });
+    });
+</script>
 {% endblock %}

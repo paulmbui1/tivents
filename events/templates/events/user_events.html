@@ -31,10 +31,19 @@
       
         
     </div>
-    
+    <div class="container">
+     {% if messages %}
+        <div>
+            {% for message in messages %}
+                <p class="success">{{ message|safe }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    </div>
+
 <div class="container">
     
-    <table id="myEventsTable" class="myEventsTable">
+    <table id="myEventsTable">
     <thead>
     <tr>
            <th>Image</th>
@@ -44,9 +53,9 @@
         </tr>
     </thead>
             <tbody>
-            {% for event in page_obj %}
+            {% for event in events %}
              <tr>
-            <td> <img src="{{ event.image.url }}" alt="{{ event.name }}"></td>
+                <td><img src="{{ event.image.url }}" alt="{{ event.name }}" style="width: 50px; height: 50px;"></td>
             <td><h3>{{ event.name }}</h3></td>
             <td><p>{{ event.description }}</p></td>
             <td> <a href="{% url 'delete_event' event.id %}">
@@ -68,20 +77,21 @@
     {% endfor %}
             </tbody>
     </table>
-        
-       <!-- Pagination controls -->
-    <div class="pagination">
-        {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-        {% endif %}
-
-        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-
-        {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Next</a>
-        {% endif %}
-    </div>
-
-
 </div>
+
+ <script type="text/javascript">
+        $(document).ready(function () {
+            $('#myEventsTable').DataTable({
+                 responsive: true,
+                "pageLength": 7,       // Default number of rows per page
+                "lengthChange": false,  // Disable "Show entries" dropdown
+                "order": [[1, 'asc']],  // Default sorting by Event Name
+                "columnDefs": [
+                    { "orderable": false, "targets": [0, 3] } // Disable sorting for Image and Action columns
+                ],
+                dom: 'Bfrtip',
+                buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+            });
+        });
+    </script>
 {% endblock %}

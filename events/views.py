@@ -11,7 +11,7 @@ from django.http import JsonResponse, HttpResponse
 from .models import TicketType
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.forms import modelformset_factory
+from django.forms import modelformset_factory, inlineformset_factory
 from .models import EventCategory
 from django.db.models import Sum, Count
 
@@ -20,6 +20,9 @@ from xhtml2pdf import pisa
 from io import BytesIO
 
 from django.http import FileResponse
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 def category_events(request, slug):
     category = get_object_or_404(EventCategory, slug=slug)
@@ -91,35 +94,43 @@ def search_results(request):
 
 @login_required
 def add_event(request):
-    TicketFormSet = modelformset_factory(TicketType, form=TicketTypeForm, extra=0, can_delete=True)
+    TicketFormSet = inlineformset_factory(
+        Event,
+        TicketType,
+        form=TicketTypeForm,
+        extra=1,
+        can_delete=True
+    )
     if request.method == "POST":
         event_form = EventForm(request.POST, request.FILES)
-        formset = TicketFormSet(request.POST, queryset=TicketType.objects.none())
+        formset = TicketFormSet(request.POST)
+
         if event_form.is_valid() and formset.is_valid():
             event = event_form.save(commit=False)
-            event.user = request.user  # Assign the logged-in user
+            event.user = request.user  # Assign current user
             event.save()
-            tickets = formset.save(commit=False)
-            for ticket in tickets:
-                ticket.event = event
-                ticket.save()
-            messages.success(request, "Event created successfully!")
+            formset.instance = event
+            formset.save()
             return redirect('list_user_events')
+
     else:
         event_form = EventForm()
-        formset = TicketFormSet(queryset=TicketType.objects.none())
-    return render(request, 'events/add_event.html', {'form': event_form, 'formset': formset})
+        formset = TicketFormSet()
+
+    return render(
+        request,
+        'events/add_event.html',
+        {
+            'form': event_form,
+            'formset': formset,
+        }
+    )
 
 @login_required
 def list_user_events(request):
     events = Event.objects.filter(user=request.user)
-    # Apply pagination for event metrics
-    paginator = Paginator(events, 5)  # 25 events per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
     context = {
         'events': events,
-        'page_obj': page_obj,  # Use the paginated object
     }
     return render(request, 'events/user_events.html', context)
 
@@ -184,15 +195,10 @@ def dashboard(request):
     # Identify the most popular event by bookings
     most_popular_event = event_metrics.order_by('-total_bookings').first()
 
-    # Apply pagination for event metrics
-    paginator = Paginator(event_metrics, 5)  # 25 events per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
     context = {
         'total_bookings': total_bookings,
         'total_revenue': total_revenue,
         'event_metrics': event_metrics,
-        'page_obj': page_obj,  # Use the paginated object
         'most_popular_event': most_popular_event,
     }
     return render(request, 'events/dashboard.html', context)
@@ -206,14 +212,11 @@ def event_booking_detail(request, event_id):
     # Get all bookings for the event
     bookings = Booking.objects.filter(event=event).order_by('-booked_on')
 
-    # Apply pagination (25 records per page)
-    paginator = Paginator(bookings, 25)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
 
     context = {
         'event': event,
-        'page_obj': page_obj,
+        'bookings': bookings,
+
     }
     return render(request, 'events/event_booking_details.html', context)
 
@@ -263,3 +266,34 @@ def download_receipt(request, booking_id):
     response = HttpResponse(pdf_content, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="receipt_{booking_id}.pdf"'
     return response
+
+
+@login_required
+@csrf_exempt
+def update_booking_status(request):
+    if request.method == "POST":
+        booking_id = request.POST.get("booking_id")
+        new_status = request.POST.get("status")
+
+        try:
+            booking = Booking.objects.get(id=booking_id, event__user=request.user)
+            booking.status = new_status
+            booking.save()
+            return JsonResponse({"success": True, "message": "Status updated successfully."})
+        except Booking.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Booking not found."})
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+
+    return JsonResponse({"success": False, "message": "Invalid request."})
+
+@csrf_exempt
+def delete_ticket(request, ticket_id):
+    if request.method == 'POST' and request.user.is_authenticated:
+        try:
+            ticket = TicketType.objects.get(id=ticket_id)
+            ticket.delete()
+            return JsonResponse({'success': True})
+        except TicketType.DoesNotExist:
+            return JsonResponse({'error': 'Ticket not found'}, status=404)
+    return JsonResponse({'error': 'Unauthorized'}, status=403)

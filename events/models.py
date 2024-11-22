@@ -74,7 +74,7 @@ class Booking(models.Model):
         ('Pending', 'Pending'),
         ('Confirmed', 'Confirmed'),
         ('Cancelled', 'Cancelled')
-    ], default='Pending')
+    ], default='Confirmed')
 
     def save(self, *args, **kwargs):
         # Calculate total price

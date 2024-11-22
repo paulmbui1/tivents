@@ -5,8 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-    <!-- Breadcrumb -->
+<div class="container">
     <nav class="breadcrumb-container">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -18,9 +17,11 @@
         </ol>
     </nav>
 </div>
-    <div class="container centre">
-        <h1>Add Event</h1>
-    </div>
+
+<div class="container centre">
+    <h1>Add Event</h1>
+</div>
+
 <div class="container">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -28,21 +29,132 @@
             <h2>Event Details</h2>
             {{ form.as_p }}
         </div>
+
+        <!-- Ticket Section -->
         <div class="form-group">
             <h2>Tickets</h2>
             {{ formset.management_form }}
-            <div id="ticket-forms">
+            <div id="ticket-forms" class="ticket-forms-container">
+                <!-- Existing ticket forms will be listed here -->
                 {% for ticket_form in formset %}
-                <div class="ticket-form">
-                    <h3>Ticket {{ forloop.counter }}</h3>
-                    {{ ticket_form.as_p }}
-                    <button type="button" class="delete-ticket" data-ticket="{{ forloop.counter }}">Delete Ticket</button>
-                </div>
+                    <div class="ticket-form row">
+                        <div class="form-field">
+                            <label>Name:</label>
+                            {{ ticket_form.name }}
+                        </div>
+                        <div class="form-field">
+                            <label>Price:</label>
+                            {{ ticket_form.price }}
+                        </div>
+                        <div class="form-field">
+                            <label>Available Quantity:</label>
+                            {{ ticket_form.available_quantity }}
+                        </div>
+                        <div class="form-field">
+                            <button type="button" class="delete-ticket btn btn-danger">Delete</button>
+                        </div>
+                    </div>
                 {% endfor %}
             </div>
-            <button type="button" id="add-ticket">Add Another Ticket</button>
         </div>
-        <button type="submit" class="submit-btn">Submit</button>
+
+        <button type="button" id="add-ticket" class="btn btn-secondary">Add Another Ticket</button>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+
+<!-- Sidebar to Add Tickets -->
+<div id="ticket-sidebar" class="ticket-sidebar">
+    <div class="sidebar-header">
+        <h2>Add Ticket</h2>
+        <button id="close-sidebar" class="close-btn">&times;</button>
+    </div>
+    <form id="ticket-form">
+        <div class="form-field">
+            <label for="ticket-name">Ticket Name</label>
+            <input type="text" id="ticket-name" placeholder="Enter ticket name" required>
+        </div>
+        <div class="form-field">
+            <label for="ticket-price">Price</label>
+            <input type="number" id="ticket-price" placeholder="Enter ticket price" step="0.01" required>
+        </div>
+        <div class="form-field">
+            <label for="ticket-quantity">Available Quantity</label>
+            <input type="number" id="ticket-quantity" placeholder="Enter quantity" required>
+        </div>
+        <button type="button" id="add-ticket-confirm" class="btn btn-primary">Add Ticket</button>
+    </form>
+</div>
+
+<script>
+$(document).ready(function () {
+    const ticketSidebar = $('#ticket-sidebar');
+    const addTicketBtn = $('#add-ticket');
+    const closeSidebarBtn = $('#close-sidebar');
+    const addTicketConfirmBtn = $('#add-ticket-confirm');
+    const ticketFormsContainer = $('#ticket-forms');
+    const totalFormsInput = $('#id_tickettype_set-TOTAL_FORMS');
+    const submitBtn = $('button[type="submit"]');  // The submit button
+
+    // Open Sidebar
+    addTicketBtn.on('click', function () {
+        ticketSidebar.addClass('active');
+    });
+
+    // Close Sidebar
+    closeSidebarBtn.on('click', function () {
+        ticketSidebar.removeClass('active');
+    });
+    addTicketConfirmBtn.on('click', function () {
+        const ticketName = $('#ticket-name').val();
+        const ticketPrice = $('#ticket-price').val();
+        const ticketQuantity = $('#ticket-quantity').val();
+
+        if (ticketName && ticketPrice && ticketQuantity) {
+            const totalForms = parseInt(totalFormsInput.val());
+            const newTicketHtml = `
+            <div class="ticket-form row">
+                <div class="form-field">
+                    <label>Ticket Name:</label>
+                    <input type="text" name="tickettype_set-${totalForms}-name" value="${ticketName}" readonly>
+                </div>
+                <div class="form-field">
+                    <label>Price:</label>
+                    <input type="number" step="0.01" name="tickettype_set-${totalForms}-price" value="${ticketPrice}" readonly>
+                </div>
+                <div class="form-field">
+                    <label>Available Quantity:</label>
+                    <input type="number" name="tickettype_set-${totalForms}-available_quantity" value="${ticketQuantity}" readonly>
+                </div>
+                <div class="form-field">
+                    <button type="button" class="delete-ticket btn btn-danger">Delete</button>
+                </div>
+            </div>`;
+
+            ticketFormsContainer.append(newTicketHtml);
+            totalFormsInput.val(totalForms + 1);
+
+            // Append hidden management form fields for ticket type set
+            const managementHtml = `
+            <input type="hidden" name="tickettype_set-TOTAL_FORMS" value="${totalForms + 1}">
+            <input type="hidden" name="tickettype_set-INITIAL_FORMS" value="0">
+            <input type="hidden" name="tickettype_set-MIN_NUM_FORMS" value="0">
+            <input type="hidden" name="tickettype_set-MAX_NUM_FORMS" value="1000">
+        `;
+            $('#ticket-forms').append(managementHtml);
+
+            // Clear Sidebar Form and Close
+            $('#ticket-name').val('');
+            $('#ticket-price').val('');
+            $('#ticket-quantity').val('');
+            ticketSidebar.removeClass('active');
+        } else {
+            alert('Please fill in all fields before adding a ticket.');
+        }
+    });
+});
+
+</script>
+
 {% endblock %}

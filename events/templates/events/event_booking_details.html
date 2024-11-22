@@ -30,10 +30,8 @@
    <p><strong>Date:</strong> {{ event.date }}</p>
     <p><strong>Location:</strong> {{ event.location }}</p>
 </div>
-<div class="container">
-    <h2 class="my-1">Bookings</h2>
-    {% if page_obj %}
-    <table class="myEventsTable my-1">
+<div class="container my-1">
+    <table id="bookingTable" class=" my-1">
         <thead>
             <tr>
                 <th>Name</th>
@@ -46,31 +44,59 @@
             </tr>
         </thead>
         <tbody>
-            {% for booking in page_obj %}
+            {% for booking in bookings %}
             <tr>
                 <td>{{ booking.name }}</td>
                 <td>{{ booking.email }}</td>
                 <td>{{ booking.phone }}</td>
                 <td>{{ booking.number_of_tickets }}</td>
-                <td>${{ booking.total_price }}</td>
+                <td>Ksh. {{ booking.total_price }}</td>
                 <td>{{ booking.booked_on }}</td>
-                <td>{{ booking.status }}</td>
+                <td>
+                     <select class="status-dropdown" data-booking-id="{{ booking.id }}">
+                        <option value="Pending" {% if booking.status == 'Pending' %}selected{% endif %}>Pending</option>
+                        <option value="Confirmed" {% if booking.status == 'Confirmed' %}selected{% endif %}>Confirmed</option>
+                        <option value="Cancelled" {% if booking.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                    </select>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-
-    <div class="pagination">
-        {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-        {% endif %}
-        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">Next</a>
-        {% endif %}
-    </div>
-    {% else %}
-    <p>No bookings found for this event.</p>
-    {% endif %}
 </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#bookingTable').DataTable({
+             responsive: true,
+            "pageLength": 8,  // Set the default number of rows per page
+            "lengthChange": true, // Disable the "Show entries" option
+            "order": [[4, 'des']],
+            dom: 'Bfrtip',
+                buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+        });
+        // Handle status change via AJAX
+        $('.status-dropdown').change(function () {
+            const bookingId = $(this).data('booking-id');
+            const newStatus = $(this).val();
+
+            $.ajax({
+                url: "{% url 'update_booking_status' %}",
+                method: "POST",
+                data: {
+                    booking_id: bookingId,
+                    status: newStatus,
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                },
+                success: function (response) {
+                    alert('Status updated successfully!');
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to update status. Please try again.');
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}
