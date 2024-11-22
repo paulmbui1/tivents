@@ -9,8 +9,11 @@ urlpatterns = [
     
     path('search/', views.search_results, name='search_results'),
 
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('dashboard/event/<int:event_id>/', views.event_booking_detail, name='event_booking_detail'),
+
     path('events/add/', views.add_event, name='add_event'),
-    path('events/my-events/', views.list_user_events, name='list_user_events'),
+    path('my-events/', views.list_user_events, name='list_user_events'),
     path('events/delete/<int:event_id>/', views.delete_event, name='delete_event'),
     path('event/<int:pk>/edit/', views.edit_event, name='edit_event'),
 

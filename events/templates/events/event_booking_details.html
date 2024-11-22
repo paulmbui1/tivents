@@ -1,0 +1,76 @@
+{% extends 'events/event_list.html'%}
+
+{% block title %}Booking for the event {{event.name}}{% endblock %}
+{% block keyword %}{{event.name}}Bookings{% endblock %}
+{%  block description %} {{event.name}}Bookings{% endblock %}
+
+
+{% block content %}
+
+ <div class="container my-1">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-container">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+            </li>
+             <li class="breadcrumb-item">
+                <a href="{% url 'list_user_events' %}">My Events</a>
+            </li>
+        </ol>
+    </nav>
+</div>
+
+
+<div class="container">
+    <h1>Bookings For The Event: {{ event.name }}</h1>
+</div>
+
+<div class="container centre2">
+   <p><strong>Date:</strong> {{ event.date }}</p>
+    <p><strong>Location:</strong> {{ event.location }}</p>
+</div>
+<div class="container">
+    <h2>Bookings</h2>
+    {% if page_obj %}
+    <table class="myEventsTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Tickets</th>
+                <th>Total Price</th>
+                <th>Booked On</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in page_obj %}
+            <tr>
+                <td>{{ booking.name }}</td>
+                <td>{{ booking.email }}</td>
+                <td>{{ booking.phone }}</td>
+                <td>{{ booking.number_of_tickets }}</td>
+                <td>${{ booking.total_price }}</td>
+                <td>{{ booking.booked_on }}</td>
+                <td>{{ booking.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+    </div>
+    {% else %}
+    <p>No bookings found for this event.</p>
+    {% endif %}
+</div>
+{% endblock %}

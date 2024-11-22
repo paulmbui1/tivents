@@ -18,8 +18,8 @@
 </div>
     <div class="container">
     <div class="col-3">
-           <h2 class="my-1">{{event.name}}</h2>
-         <p class="m-1 centre2">
+           <h2>{{event.name}}</h2>
+         <p class="centre2 my-1">
             <i class="fa-solid fa-calendar-days"></i>{{ event.date }} <br>
             <i class="fa-solid fa-clock"></i>{{ event.time }} <br>
             <i class="fa-solid fa-location-dot"></i>{{ event.location }}
@@ -40,7 +40,7 @@
     </div>
         
         
-    <h2 class="">Book This Event</h2>
+    <h2 class="m-1">Book This Event</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
@@ -49,7 +49,26 @@
         <button type="submit" class="btn-primary">Book Now</button>
         
     </form>
-   
+   <div class="social-sharing">
+    <h3>Share this Event:</h3>
+    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
+       target="_blank" class="border-none btn btn-facebook">
+        <i class="fa-brands fa-facebook"></i> Share on Facebook
+    </a>
+    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ event.title }}"
+       target="_blank" class="border-none btn btn-twitter">
+        <i class="fa-brands fa-twitter"></i> Share on Twitter
+    </a>
+    <a href="https://api.whatsapp.com/send?text={{ event.title }}: {{ request.build_absolute_uri }}"
+       target="_blank" class="border-none btn btn-whatsapp">
+        <i class="fa-brands fa-whatsapp"></i> Share on WhatsApp
+    </a>
+    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}"
+       target="_blank" class="border-none btn btn-linkedin">
+        <i class="fa-brands fa-linkedin"></i> Share on LinkedIn
+    </a>
+</div>
+
 </div>
     </div>
     

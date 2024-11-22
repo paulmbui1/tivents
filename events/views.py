@@ -10,8 +10,8 @@ from .models import TicketType
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.forms import modelformset_factory
-from events.models import EventCategory
-
+from .models import EventCategory
+from django.db.models import Sum, Count
 
 def category_events(request, slug):
     category = get_object_or_404(EventCategory, slug=slug)
@@ -145,3 +145,41 @@ def edit_event(request, pk):
         form = EventForm(instance=event)  # Pre-fill the form with existing event data
 
     return render(request, 'events/edit_event.html', {'form': form, 'event': event})
+
+@login_required
+def dashboard(request):
+    user_events = Event.objects.filter(user=request.user)
+    # Calculate metrics for the user's events
+    total_bookings = Booking.objects.filter(event__in=user_events).count()  # Bookings for user's events
+    total_revenue = Booking.objects.filter(event__in=user_events).aggregate(Sum('total_price'))['total_price__sum'] or 0
+    event_metrics = user_events.annotate(
+        total_bookings=Count('bookings'),
+        remaining_tickets=Sum('ticket_types__available_quantity')
+    )
+
+    context = {
+        'total_bookings': total_bookings,
+        'total_revenue': total_revenue,
+        'event_metrics': event_metrics,
+    }
+    return render(request, 'events/dashboard.html', context)
+
+
+@login_required
+def event_booking_detail(request, event_id):
+    # Ensure the event belongs to the logged-in user
+    event = get_object_or_404(Event, id=event_id, user=request.user)
+
+    # Get all bookings for the event
+    bookings = Booking.objects.filter(event=event).order_by('-booked_on')
+
+    # Apply pagination (25 records per page)
+    paginator = Paginator(bookings, 25)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'event': event,
+        'page_obj': page_obj,
+    }
+    return render(request, 'events/event_booking_details.html', context)

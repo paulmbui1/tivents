@@ -1,0 +1,64 @@
+{% extends "events/event_list.html" %}
+
+{% block title %}Events Dashboard{% endblock %}
+{%  block keyword %}Events Dashboard{% endblock %}
+{%  block description %} Events Dashboard{% endblock %}
+
+
+{% block content %}
+
+<div class="container my-1">
+    <div class="col-80">
+    <h2>Dashboard</h2>
+    </div>
+    <div class="col-1">
+          <a href="{% url 'add_event' %}" class="border-none">
+            <button class="btn-primary-outline" type="button"><i class="fa fa-plus-circle"></i>Add Events</button>
+        </a>
+        <a href="{% url 'list_user_events' %}" class="border-none">
+            <button class="btn-primary-outline" type="button"><i class="fa fa-eye"></i>View My Events</button>
+        </a>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="card p-1 centre">
+            <h3>Total Bookings</h3>
+            <p>{{ total_bookings }}</p>
+        </div>
+        <div class="card p-1 centre">
+            <h3>Total Revenue</h3>
+            <p>Ksh. {{ total_revenue }}</p>
+        </div>
+</div>
+
+<div class="container centre">
+    <h3>Event Metrics</h3>
+</div>
+
+<div class="container">
+
+    <table class="myEventsTable">
+        <thead>
+        <tr>
+                <th>
+                    Event Name
+                </th>
+                <th>Total Bookings</th>
+                <th>Remaining Tickets</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in event_metrics %}
+            <tr>
+                <td> <a href="{% url 'event_booking_detail' event.id %}">{{ event.name }}</a>
+                    </td>
+                <td>{{ event.total_bookings }}</td>
+                <td>{{ event.remaining_tickets }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

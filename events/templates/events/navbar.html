@@ -50,6 +50,7 @@
         </a>
         <ul id="user-dropdown-items" class="dropdown-items hidden">
             {% if user.is_authenticated %}
+                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
                 <li><a href="{% url 'list_user_events' %}">My Events</a></li>
                 <li><a href="{% url 'add_event' %}">Add Events</a></li>
                 <li><a href="{% url 'logout' %}?next={{ request.path }}">Logout</a></li>
@@ -86,6 +87,7 @@
         </a>
         <ul id="user-dropdown-items" class="dropdown-items">
             {% if user.is_authenticated %}
+                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
                 <li><a href="{% url 'list_user_events' %}">My Events</a></li>
                 <li><a href="{% url 'add_event' %}">Add Events</a></li>
                 <li><a href="{% url 'logout' %}?next={{ request.path }}">Logout</a></li>

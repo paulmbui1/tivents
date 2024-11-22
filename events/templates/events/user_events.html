@@ -10,7 +10,10 @@
     <nav class="breadcrumb-container">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="/">Home</a>
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+            </li>
+             <li class="breadcrumb-item">
+                <a href="{% url 'list_user_events' %}">My Events</a>
             </li>
         </ol>
     </nav>
@@ -31,7 +34,7 @@
     
 <div class="container">
     
-    <table id="myEventsTable">
+    <table id="myEventsTable" class="myEventsTable">
     <thead>
     <tr>
            <th>Image</th>

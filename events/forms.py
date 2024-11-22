@@ -5,8 +5,8 @@ from .models import Booking, TicketType, Event
 
 class BookingForm(forms.ModelForm):
     ticket_type = forms.ModelChoiceField(
-        queryset=TicketType.objects.none(),  # Dynamically loaded in the view
-        widget=forms.Select(attrs={'class': 'form-control'})
+        queryset=TicketType.objects.none(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
     )
     number_of_tickets = forms.IntegerField(min_value=1, widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
@@ -19,6 +19,13 @@ class BookingForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if event:
             self.fields['ticket_type'].queryset = event.ticket_types.all()
+
+    def clean_number_of_tickets(self):
+        number_of_tickets = self.cleaned_data.get('number_of_tickets')
+        ticket_type = self.cleaned_data.get('ticket_type')
+        if ticket_type and number_of_tickets > ticket_type.available_quantity:
+            raise forms.ValidationError(f"Only {ticket_type.available_quantity} tickets are available.")
+        return number_of_tickets
 
 #event form
 
