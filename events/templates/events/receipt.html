@@ -1,10 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 1.5em;
+        }
+        .details {
+            margin: 20px 0;
+        }
+        .details th, .details td {
+            text-align: left;
+            padding: 5px;
+        }
+    </style>
 </head>
 <body>
-$END$
+    <div class="container">
+        <h1>Event Booking Receipt</h1>
+        <table class="details">
+            <tr>
+                <th>Booking ID:</th>
+                <td>{{ booking.id }}</td>
+            </tr>
+            <tr>
+                <th>Event Name:</th>
+                <td>{{ event.name }}</td>
+            </tr>
+            <tr>
+                <th>Date:</th>
+                <td>{{ event.date }}</td>
+            </tr>
+            <tr>
+                <th>Location:</th>
+                <td>{{ event.location }}</td>
+            </tr>
+            <tr>
+                <th>Ticket Type:</th>
+                <td>{{ ticket_type.name }}</td>
+            </tr>
+            <tr>
+                <th>Price Per Ticket:</th>
+                <td>Ksh {{ ticket_type.price }}</td>
+            </tr>
+            <tr>
+                <th>Number of Tickets:</th>
+                <td>{{ booking.number_of_tickets }}</td>
+            </tr>
+            <tr>
+                <th>Total Price:</th>
+                <td>Ksh {{ total_price }}</td>
+            </tr>
+            <tr>
+                <th>Booked On:</th>
+                <td>{{ booking.booked_on }}</td>
+            </tr>
+        </table>
+        <p>Thank you for booking with us!</p>
+    </div>
 </body>
 </html>

@@ -26,14 +26,14 @@
     <h1>Bookings For The Event: {{ event.name }}</h1>
 </div>
 
-<div class="container centre2">
+<div class="container centre2 my-1">
    <p><strong>Date:</strong> {{ event.date }}</p>
     <p><strong>Location:</strong> {{ event.location }}</p>
 </div>
 <div class="container">
-    <h2>Bookings</h2>
+    <h2 class="my-1">Bookings</h2>
     {% if page_obj %}
-    <table class="myEventsTable">
+    <table class="myEventsTable my-1">
         <thead>
             <tr>
                 <th>Name</th>

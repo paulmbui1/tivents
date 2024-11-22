@@ -5,7 +5,7 @@
 
 {%  block description %} {{ event.description }}{% endblock %}
 {% block content %}
-    <div class="container">
+    <div class="container my-1">
     <!-- Breadcrumb -->
     <nav class="breadcrumb-container">
         <ol class="breadcrumb">
@@ -33,7 +33,7 @@
      {% if messages %}
         <div>
             {% for message in messages %}
-                <p class="success">{{ message }}</p>
+                <p class="success">{{ message|safe }}</p>
             {% endfor %}
         </div>
     {% endif %}
@@ -71,6 +71,5 @@
 
 </div>
     </div>
-    
-    
+
 {% endblock %}

@@ -16,7 +16,7 @@
             <button class="btn-primary-outline" type="button"><i class="fa fa-plus-circle"></i>Add Events</button>
         </a>
         <a href="{% url 'list_user_events' %}" class="border-none">
-            <button class="btn-primary-outline" type="button"><i class="fa fa-eye"></i>View My Events</button>
+            <button type="button"><i class="fa fa-eye"></i> View My Events</button>
         </a>
     </div>
 </div>
@@ -25,12 +25,23 @@
 <div class="container">
     <div class="card p-1 centre">
             <h3>Total Bookings</h3>
-            <p>{{ total_bookings }}</p>
+        <p><b>{{ total_bookings }}</b></p>
         </div>
         <div class="card p-1 centre">
             <h3>Total Revenue</h3>
-            <p>Ksh. {{ total_revenue }}</p>
+            <p>Ksh. <b>{{ total_revenue }}</b></p>
         </div>
+
+    <!-- Card for the Most Popular Event -->
+{% if most_popular_event %}
+    <div class="card p-1 centre">
+        <h3>Most Popular Event</h3>
+        <p><strong>{{ most_popular_event.name }}</strong></p>
+        <p>With a Total Bookings of : <b>{{ most_popular_event.total_bookings }}</b></p>
+    </div>
+
+{% endif %}
+
 </div>
 
 <div class="container centre">
@@ -47,18 +58,33 @@
                 </th>
                 <th>Total Bookings</th>
                 <th>Remaining Tickets</th>
+             <th>Percentage Booked</th>
             </tr>
         </thead>
         <tbody>
-            {% for event in event_metrics %}
+            {% for event in page_obj %}
             <tr>
                 <td> <a href="{% url 'event_booking_detail' event.id %}">{{ event.name }}</a>
                     </td>
                 <td>{{ event.total_bookings }}</td>
                 <td>{{ event.remaining_tickets }}</td>
+                 <td>{{ event.percentage_booked|floatformat:2 }}%</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+        <!-- Pagination controls -->
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+    </div>
+
 </div>
 {% endblock %}

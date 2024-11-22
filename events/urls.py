@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.root, name='root'),
     path('event/<slug:slug>/', views.event_details, name='event_details'),
     path('get_ticket_price/<int:ticket_type_id>/', views.get_ticket_price, name='get_ticket_price'),
+    path('download-receipt/<int:booking_id>/', views.download_receipt, name='download_receipt'),
     
     path('search/', views.search_results, name='search_results'),
 

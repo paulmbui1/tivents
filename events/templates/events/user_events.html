@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %} 
- <div class="container">
+ <div class="container my-1">
     <!-- Breadcrumb -->
     <nav class="breadcrumb-container">
         <ol class="breadcrumb">
@@ -44,7 +44,7 @@
         </tr>
     </thead>
             <tbody>
-            {% for event in events %}
+            {% for event in page_obj %}
              <tr>
             <td> <img src="{{ event.image.url }}" alt="{{ event.name }}"></td>
             <td><h3>{{ event.name }}</h3></td>
@@ -67,10 +67,21 @@
     <p>You have no events.</p>
     {% endfor %}
             </tbody>
-       
-      
     </table>
         
-   
+       <!-- Pagination controls -->
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+    </div>
+
+
 </div>
 {% endblock %}

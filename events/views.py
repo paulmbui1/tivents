@@ -2,16 +2,24 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+
 from .forms import BookingForm, EventForm, SignUpForm, TicketTypeForm
 from .models import Event, TicketType, Booking
-from django.db.models import Q
-from django.http import JsonResponse
+from django.db.models import Q, ExpressionWrapper, F,FloatField
+from django.http import JsonResponse, HttpResponse
 from .models import TicketType
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.forms import modelformset_factory
 from .models import EventCategory
 from django.db.models import Sum, Count
+
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from io import BytesIO
+
+from django.http import FileResponse
 
 def category_events(request, slug):
     category = get_object_or_404(EventCategory, slug=slug)
@@ -50,7 +58,9 @@ def event_details(request, slug):
             booking.user = request.user  # Assuming you want to associate the booking with the logged-in user
             try:
                 booking.save()
-                messages.success(request, "Booking successful!")
+                receipt_url = reverse('download_receipt', kwargs={'booking_id': booking.id})
+                success_message = f"Booking successful!<br> <a href='{receipt_url}'>Click here to download your receipt immediately.</a> <br>Be sure to save it"
+                messages.success(request, success_message)
                 return redirect('event_details', slug=slug)
             except ValueError as e:
                 form.add_error(None, str(e))
@@ -103,7 +113,15 @@ def add_event(request):
 @login_required
 def list_user_events(request):
     events = Event.objects.filter(user=request.user)
-    return render(request, 'events/user_events.html', {'events': events})
+    # Apply pagination for event metrics
+    paginator = Paginator(events, 5)  # 25 events per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {
+        'events': events,
+        'page_obj': page_obj,  # Use the paginated object
+    }
+    return render(request, 'events/user_events.html', context)
 
 @login_required
 def delete_event(request, event_id):
@@ -154,13 +172,28 @@ def dashboard(request):
     total_revenue = Booking.objects.filter(event__in=user_events).aggregate(Sum('total_price'))['total_price__sum'] or 0
     event_metrics = user_events.annotate(
         total_bookings=Count('bookings'),
-        remaining_tickets=Sum('ticket_types__available_quantity')
+        remaining_tickets=Sum('ticket_types__available_quantity'),
+        total_tickets = Sum('ticket_types__available_quantity') + Count('bookings', distinct=True),
+    ).annotate(
+        percentage_booked=ExpressionWrapper(
+            F('total_bookings') * 100.0 / F('total_tickets'),
+            output_field=FloatField()
+        )
     )
 
+    # Identify the most popular event by bookings
+    most_popular_event = event_metrics.order_by('-total_bookings').first()
+
+    # Apply pagination for event metrics
+    paginator = Paginator(event_metrics, 5)  # 25 events per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
         'total_bookings': total_bookings,
         'total_revenue': total_revenue,
         'event_metrics': event_metrics,
+        'page_obj': page_obj,  # Use the paginated object
+        'most_popular_event': most_popular_event,
     }
     return render(request, 'events/dashboard.html', context)
 
@@ -183,3 +216,50 @@ def event_booking_detail(request, event_id):
         'page_obj': page_obj,
     }
     return render(request, 'events/event_booking_details.html', context)
+
+
+def generate_pdf_receipt(booking_id):
+    """
+    Generate PDF receipt for a booking.
+    """
+    from .models import Booking  # Ensure this matches your app's name
+
+    # Fetch the booking
+    try:
+        booking = Booking.objects.select_related('event', 'ticket_type').get(pk=booking_id)
+    except Booking.DoesNotExist:
+        return None
+
+    # Prepare context for rendering the template
+    context = {
+        'booking': booking,
+        'event': booking.event,
+        'ticket_type': booking.ticket_type,
+        'total_price': booking.total_price,
+    }
+
+    # Render the receipt template
+    template = get_template('events/receipt.html')
+    html = template.render(context)
+
+    # Convert HTML to PDF
+    buffer = BytesIO()
+    pisa_status = pisa.CreatePDF(BytesIO(html.encode('utf-8')), dest=buffer)
+
+    if pisa_status.err:
+        return None
+
+    return buffer.getvalue()
+
+
+@login_required
+def download_receipt(request, booking_id):
+    pdf_content = generate_pdf_receipt(booking_id)
+
+    if not pdf_content:
+        return HttpResponse("Error generating PDF", content_type="text/plain")
+
+    # Send the PDF as a downloadable file
+    response = HttpResponse(pdf_content, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="receipt_{booking_id}.pdf"'
+    return response
