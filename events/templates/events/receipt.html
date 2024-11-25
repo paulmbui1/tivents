@@ -30,20 +30,40 @@
     <div class="container">
         <h1>Event Booking Receipt</h1>
         <table class="details">
-            <tr>
-                <th>Booking ID:</th>
-                <td>{{ booking.id }}</td>
+          <tr>
+                <th>Ticket ID:</th>
+                <td>{{ booking.ticket_id }}</td>
             </tr>
             <tr>
                 <th>Event Name:</th>
                 <td>{{ event.name }}</td>
             </tr>
             <tr>
-                <th>Date:</th>
+                <th>Ticket booked by:</th>
+                <td>{{ booking.name }}</td>
+            </tr>
+            <tr>
+                <th>Phone number:</th>
+                <td>{{ booking.phone }}</td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td>{{ booking.email }}</td>
+            </tr>
+            <tr>
+                <th>By:</th>
+                <td>{{ event.user }}</td>
+            </tr>
+            <tr>
+                <th>Event Date:</th>
                 <td>{{ event.date }}</td>
             </tr>
             <tr>
-                <th>Location:</th>
+                <th>Starts From:</th>
+                <td>{{ event.time }} to {{ event.end_time }} </td>
+            </tr>
+            <tr>
+                <th>Event Location:</th>
                 <td>{{ event.location }}</td>
             </tr>
             <tr>
@@ -67,6 +87,10 @@
                 <td>{{ booking.booked_on }}</td>
             </tr>
         </table>
+        <div>
+        <h2>QR Code</h2>
+        <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" style="width: 150px; height: 150px;">
+    </div>
         <p>Thank you for booking with us!</p>
     </div>
 </body>

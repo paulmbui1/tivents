@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Tickets</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" rel="stylesheet"></script>
+
+</head>
+<body class="bg-light">
+
+    <div class="container py-5">
+        <h1 class="text-center mb-4">QR Code Ticket Scanner</h1>
+
+        <!-- Scanner Section -->
+        <div class="card">
+            <div class="card-body">
+                <h4>Scan the Ticket</h4>
+                <div id="qr-reader" style="width: 100%;"></div>
+                <p class="mt-3 text-muted">Point your camera at the QR code to scan it.</p>
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <div class="card mt-3" id="result-card" style="display: none;">
+            <div class="card-body">
+                <h4>Scan Result</h4>
+                <div id="result-message" class="alert" role="alert"></div>
+                <table class="table table-bordered" id="ticket-details" style="display: none;">
+                    <tr>
+                        <th>Ticket ID</th>
+                        <td id="ticket-id"></td>
+                    </tr>
+                    <tr>
+                        <th>Event</th>
+                        <td id="event-name"></td>
+                    </tr>
+                    <tr>
+                        <th>Buyer Name</th>
+                        <td id="buyer-name"></td>
+                    </tr>
+                    <tr>
+                        <th>Buyer Email</th>
+                        <td id="buyer-email"></td>
+                    </tr>
+                    <tr>
+                        <th>Number of Tickets</th>
+                        <td id="tickets-count"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            // Hide the scanner and send the ticket ID to the backend for verification
+            html5QrCode.stop().then(() => {
+                fetchVerifyTicket(decodedText);
+            }).catch(err => console.error("Failed to stop QR Code scanner", err));
+        }
+
+        function onScanFailure(error) {
+            // Optional: Log scan errors (useful for debugging)
+            console.warn(`QR Code scan failed: ${error}`);
+        }
+
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        const qrCodeScannerConfig = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+        html5QrCode.start({ facingMode: "environment" }, qrCodeScannerConfig, onScanSuccess, onScanFailure);
+
+        function fetchVerifyTicket(ticketId) {
+            fetch("{% url 'verify_ticket' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: `ticket_id=${ticketId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result-card").style.display = "block";
+
+                if (data.success) {
+                    document.getElementById("result-message").className = "alert alert-success";
+                    document.getElementById("result-message").textContent = data.message;
+
+                    // Populate ticket details
+                    document.getElementById("ticket-id").textContent = data.ticket_details.ticket_id;
+                    document.getElementById("event-name").textContent = data.ticket_details.event_name;
+                    document.getElementById("buyer-name").textContent = data.ticket_details.buyer_name;
+                    document.getElementById("buyer-email").textContent = data.ticket_details.buyer_email;
+                    document.getElementById("tickets-count").textContent = data.ticket_details.tickets_count;
+
+                    document.getElementById("ticket-details").style.display = "table";
+                } else {
+                    document.getElementById("result-message").className = "alert alert-danger";
+                    document.getElementById("result-message").textContent = data.message;
+                    document.getElementById("ticket-details").style.display = "none";
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                document.getElementById("result-card").style.display = "block";
+                document.getElementById("result-message").className = "alert alert-danger";
+                document.getElementById("result-message").textContent = "An error occurred while verifying the ticket.";
+            });
+        }
+    </script>
+</body>
+</html>

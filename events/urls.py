@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 
-from .views import delete_ticket
+from .views import delete_ticket, scan_qr_code
 
 urlpatterns = [
     path('', views.root, name='root'),
@@ -27,5 +27,10 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
 
     path('category/<slug:slug>/', views.category_events, name='category_events'),
+
+    path('scan_qr_code/', scan_qr_code, name='scan_qr_code'),
+
+    path('scan-ticket/', views.scan_ticket_view, name='scan_ticket'),
+    path('verify-ticket/', views.verify_ticket, name='verify_ticket'),
 ]
 

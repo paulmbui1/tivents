@@ -24,6 +24,14 @@ from django.http import FileResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from pyzbar.pyzbar import decode
+from PIL import Image
+from django.utils.timezone import now
+
+import qrcode
+import base64
+from io import BytesIO
+
 def category_events(request, slug):
     category = get_object_or_404(EventCategory, slug=slug)
     events = Event.objects.filter(category=category)
@@ -206,10 +214,8 @@ def dashboard(request):
 
 @login_required
 def event_booking_detail(request, event_id):
-    # Ensure the event belongs to the logged-in user
     event = get_object_or_404(Event, id=event_id, user=request.user)
 
-    # Get all bookings for the event
     bookings = Booking.objects.filter(event=event).order_by('-booked_on')
 
 
@@ -222,26 +228,40 @@ def event_booking_detail(request, event_id):
 
 
 def generate_pdf_receipt(booking_id):
-    """
-    Generate PDF receipt for a booking.
-    """
-    from .models import Booking  # Ensure this matches your app's name
+    from .models import Booking
 
-    # Fetch the booking
     try:
         booking = Booking.objects.select_related('event', 'ticket_type').get(pk=booking_id)
     except Booking.DoesNotExist:
         return None
 
-    # Prepare context for rendering the template
+    # Generate QR Code
+    qr_data = f"""
+    Booking ID: {booking.id}
+    Ticket ID: {booking.ticket_id}
+    Event: {booking.event.name}
+    Date: {booking.event.date}
+    Location: {booking.event.location}
+    Ticket Type: {booking.ticket_type.name}
+    """
+    qr = qrcode.QRCode(box_size=5, border=2)
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+
+    # Save QR code to a BytesIO stream
+    qr_stream = BytesIO()
+    qr.make_image(fill_color="black", back_color="white").save(qr_stream, format="PNG")
+    qr_stream.seek(0)
+    qr_code_base64 = base64.b64encode(qr_stream.getvalue()).decode('utf-8')
+
     context = {
         'booking': booking,
         'event': booking.event,
         'ticket_type': booking.ticket_type,
         'total_price': booking.total_price,
+        'qr_code': qr_code_base64,  # Add QR code to the context
     }
 
-    # Render the receipt template
     template = get_template('events/receipt.html')
     html = template.render(context)
 
@@ -255,7 +275,7 @@ def generate_pdf_receipt(booking_id):
     return buffer.getvalue()
 
 
-@login_required
+
 def download_receipt(request, booking_id):
     pdf_content = generate_pdf_receipt(booking_id)
 
@@ -297,3 +317,92 @@ def delete_ticket(request, ticket_id):
         except TicketType.DoesNotExist:
             return JsonResponse({'error': 'Ticket not found'}, status=404)
     return JsonResponse({'error': 'Unauthorized'}, status=403)
+
+
+@csrf_exempt
+@login_required
+def scan_qr_code(request):
+    if request.method == "POST" and request.FILES.get('qr_code_image'):
+        qr_code_image = request.FILES['qr_code_image']
+
+        # Decode the QR code
+        try:
+            image = Image.open(qr_code_image)
+            qr_data = decode(image)
+            if not qr_data:
+                return JsonResponse({"success": False, "message": "Invalid QR code."})
+
+            decoded_data = qr_data[0].data.decode("utf-8")
+            ticket_data = dict(line.split(": ") for line in decoded_data.split("\n"))
+
+            ticket_id = ticket_data.get("ticket_id")
+            event_name = ticket_data.get("event_name")
+
+            # Validate ticket
+            booking = get_object_or_404(Booking, ticket_id=ticket_id, event__name=event_name)
+            if booking.ticket_is_scanned:
+                return JsonResponse({"success": False, "message": "Ticket has already been scanned."})
+
+            if booking.event.event_status != 'Upcoming':
+                return JsonResponse({"success": False, "message": "Invalid ticket. Event is not upcoming."})
+
+            # Update ticket status
+            booking.ticket_is_scanned = True
+            booking.save()
+
+            return JsonResponse({"success": True, "message": "Ticket successfully validated."})
+
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+
+    return JsonResponse({"success": False, "message": "Invalid request."})
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@login_required
+def scan_ticket_view(request):
+    """Render the QR code scanning page."""
+    return render(request, 'events/scan_ticket.html')
+
+@csrf_exempt
+@login_required
+def verify_ticket(request):
+    """Verify the scanned ticket."""
+    if request.method == "POST":
+        ticket_id = request.POST.get("ticket_id")  # Get ticket ID from the scanned QR code
+
+        try:
+            # Fetch the booking based on the ticket ID
+            booking = Booking.objects.select_related('event').get(ticket_id=ticket_id)
+
+            # Check if the event is valid and upcoming
+            if booking.event.date < timezone.now().date():
+                return JsonResponse({"success": False, "message": "This event has already expired."})
+
+            if booking.ticket_is_scanned:
+                return JsonResponse({"success": False, "message": "This ticket has already been scanned."})
+
+            # Mark the ticket as scanned
+            booking.ticket_is_scanned = True
+            booking.save()
+
+            # Return the scanned ticket information
+            data = {
+                "success": True,
+                "message": "Ticket is valid and has been scanned successfully.",
+                "ticket_details": {
+                    "ticket_id": booking.ticket_id,
+                    "event_name": booking.event.name,
+                    "buyer_name": booking.name,
+                    "buyer_email": booking.email,
+                    "tickets_count": booking.number_of_tickets,
+                }
+            }
+            return JsonResponse(data)
+
+        except Booking.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Invalid ticket. Ticket not found."})
+
+    return JsonResponse({"success": False, "message": "Invalid request method."})
